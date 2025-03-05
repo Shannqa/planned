@@ -1,14 +1,14 @@
 import { Link } from "expo-router";
 import { View, Text } from "react-native";
+import { TextInput } from "react-native-web";
 import BaseText from "./base_text";
 import BaseLink from "./base_link";
 
-export default function Home() {
+export default function AddNote() {
   return (
     <View>
-      <BaseText>Home screen</BaseText>
-      <BaseLink href="/all_notes">All notes</BaseLink>
-      <BaseLink href="/add_note">Add a note</BaseLink>
+      <BaseText>Add note</BaseText>
+      <BaseLink href="/">Back</BaseLink>
     </View>
   );
 }
