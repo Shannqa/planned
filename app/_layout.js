@@ -1,38 +1,41 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Stack } from "expo-router";
-import { SQLiteProvider } from "expo-sqlite";
+import { SQLiteProvider, useSQLiteContext } from "expo-sqlite";
 import * as SQLite from "expo-sqlite";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import NotesProvider from "./notes_provider";
 
 export default function RootLayout() {
-  // return <Stack screenOptions={{ headerShown: false }} />;
+  const [notes, setNotes] = useState([]);
 
   return (
     <GestureHandlerRootView>
       <SQLiteProvider databaseName="notes.db">
-        <Stack>
-          <Stack.Screen
-            name="index"
-            options={{
-              title: "Home",
-              headerShown: false,
-            }}
-          />
-          <Stack.Screen
-            name="all_notes"
-            options={{
-              title: "All notes",
-              headerShown: false,
-            }}
-          />
-          <Stack.Screen
-            name="add_note"
-            options={{
-              title: "Add a note",
-              headerShown: false,
-            }}
-          />
-        </Stack>
+        <NotesProvider>
+          <Stack>
+            <Stack.Screen
+              name="index"
+              options={{
+                title: "Home",
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="all_notes"
+              options={{
+                title: "All notes",
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="add_note"
+              options={{
+                title: "Add a note",
+                headerShown: false,
+              }}
+            />
+          </Stack>
+        </NotesProvider>
       </SQLiteProvider>
     </GestureHandlerRootView>
   );
