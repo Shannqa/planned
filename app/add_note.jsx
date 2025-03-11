@@ -4,6 +4,7 @@ import BaseText from "./base_text";
 import BaseLink from "./base_link";
 import React, { useState } from "react";
 import BackButton from "./back_btn";
+import { useSQLiteContext } from "expo-sqlite";
 
 export default function AddNote() {
   const [title, setTitle] = useState("");
