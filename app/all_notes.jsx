@@ -1,11 +1,11 @@
 import React, { useContext } from "react";
 import { Link } from "expo-router";
 import { View, Text, FlatList } from "react-native";
-import BaseLink from "./base_link";
-import BackButton from "./back_btn";
-import BaseText from "./base_text";
+import BaseLink from "../helpers/base_link";
+import BackButton from "../helpers/back_btn";
+import BaseText from "../helpers/base_text";
 import { useSQLiteContext } from "expo-sqlite";
-import { AppContext } from "./notes_provider";
+import { AppContext } from "../helpers/notes_provider";
 
 export default function AllNotes() {
   const { notes, setNotes } = useContext(AppContext);
