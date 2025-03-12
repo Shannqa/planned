@@ -32,9 +32,9 @@ export default function AddNote() {
   };
 
   return (
-    <View>
-      <BaseText>Add note</BaseText>
-      <BackButton />
+    <View style={styles.container}>
+      {/* <BaseText>Add note</BaseText> */}
+      {/* <BackButton /> */}
       <TextInput style={styles.title} onChangeText={setTitle} value={title} />
       <TextInput
         style={styles.body}
@@ -50,6 +50,9 @@ export default function AddNote() {
 }
 
 const styles = StyleSheet.create({
+  container: {
+    padding: 14,
+  },
   title: {
     margin: 10,
     padding: 10,

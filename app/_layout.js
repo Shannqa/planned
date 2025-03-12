@@ -29,14 +29,14 @@ export default function RootLayout() {
               name="all_notes"
               options={{
                 title: "All notes",
-                headerShown: false,
+                // headerShown: false,
               }}
             />
             <Drawer.Screen
               name="add_note"
               options={{
                 title: "Add a note",
-                headerShown: false,
+                // headerShown: false,
               }}
             />
           </Drawer>

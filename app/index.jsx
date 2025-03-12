@@ -22,10 +22,18 @@ export default function Home() {
   return (
     <SafeAreaProvider>
       <SafeAreaView>
-        <BaseText>Home screen</BaseText>
-        <BaseLink href="/all_notes">All notes</BaseLink>
-        <BaseLink href="/add_note">Add a note</BaseLink>
+        <View style={styles.container}>
+          {/* <BaseText>Home screen</BaseText> */}
+          <BaseLink href="/all_notes">All notes</BaseLink>
+          <BaseLink href="/add_note">Add a note</BaseLink>
+        </View>
       </SafeAreaView>
     </SafeAreaProvider>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    padding: 14,
+  },
+});
