@@ -4,7 +4,6 @@ export default function Layout() {
   return (
     <Stack initialRouteName="index">
       <Stack.Screen name="index" options={{ headerShown: false }} />
-      <Stack.Screen name="[note_id]" />
     </Stack>
   );
 }
