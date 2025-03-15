@@ -1,11 +1,8 @@
 import React, { useContext, useState, useEffect } from "react";
 import { Link } from "expo-router";
 import { View, Text, TextInput, StyleSheet, Button } from "react-native";
-import BaseText from "../helpers/base_text";
-import BaseLink from "../helpers/base_link";
-import BackButton from "../helpers/back_btn";
 import { useSQLiteContext } from "expo-sqlite";
-import { AppContext } from "../helpers/notes_provider";
+import { AppContext } from "../../helpers/notes_provider";
 
 export default function AddNote() {
   const [title, setTitle] = useState("");

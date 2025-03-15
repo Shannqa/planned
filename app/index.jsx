@@ -24,8 +24,8 @@ export default function Home() {
       <SafeAreaView>
         <View style={styles.container}>
           {/* <BaseText>Home screen</BaseText> */}
-          <BaseLink href="/all_notes">All notes</BaseLink>
-          <BaseLink href="/add_note">Add a note</BaseLink>
+          <BaseLink href="/notes/">All notes</BaseLink>
+          <BaseLink href="notes/add">Add a note</BaseLink>
         </View>
       </SafeAreaView>
     </SafeAreaProvider>
