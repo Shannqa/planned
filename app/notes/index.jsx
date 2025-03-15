@@ -53,8 +53,8 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   singleNote: {
-    borderWidth: 1,
-    borderColor: "grey",
+    // borderWidth: 1,
+    // borderColor: "grey",
     margin: 4,
     padding: 4,
     fontSize: 17,
@@ -65,6 +65,8 @@ const styles = StyleSheet.create({
     height: 150,
     justifyContent: "flex-start",
     alignItems: "flex-start",
+    backgroundColor: "white",
+    boxShadow: "2 2 2 lightgrey",
   },
   row: {},
   title: {
