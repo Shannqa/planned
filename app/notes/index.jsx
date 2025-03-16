@@ -7,16 +7,20 @@ import {
   StyleSheet,
   Button,
   Pressable,
+  useColorScheme,
 } from "react-native";
 import { useSQLiteContext } from "expo-sqlite";
 import { AppContext } from "../../helpers/notes_provider";
+import { colors } from "../../helpers/themes";
+import { Appearance } from "react-native";
 
 export default function AllNotes() {
   const { notes, setNotes } = useContext(AppContext);
   const db = useSQLiteContext();
-
+  const theme = useColorScheme();
+  console.log(colors.bg_primary[theme]);
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, colors.bg_primary[theme]]}>
       <FlatList
         data={notes}
         keyExtractor={(item) => item.id.toString()}
@@ -39,15 +43,24 @@ export default function AllNotes() {
     </View>
   );
 }
+
 const styles = StyleSheet.create({
+  theme: {
+    light: "green",
+    dark: "red",
+  },
   container: {
     padding: 14,
     flex: 1,
     width: "100%",
   },
+  lightContainer: {
+    backgroundColor: "#FFFFFF",
+  },
+  darkContainer: {
+    backgroundColor: "#000000",
+  },
   singleNote: {
-    // borderWidth: 1,
-    // borderColor: "grey",
     margin: 4,
     padding: 4,
     fontSize: 17,
@@ -58,8 +71,8 @@ const styles = StyleSheet.create({
     height: 150,
     justifyContent: "flex-start",
     alignItems: "flex-start",
-    backgroundColor: "white",
     boxShadow: "2 2 2 lightgrey",
+    backgroundColor: colors.bg_primary,
   },
   row: {},
   title: {

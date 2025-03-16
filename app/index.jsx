@@ -10,9 +10,7 @@ import {
 import BaseText from "../helpers/base_text";
 import BaseLink from "../helpers/base_link";
 import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
-import { useSQLiteContext } from "expo-sqlite";
 import { useEffect, useState } from "react";
-// import { BaseButton } from "react-native-gesture-handler";
 
 export default function Home() {
   const [version, setVersion] = useState("");

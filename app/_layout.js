@@ -27,6 +27,11 @@ export default function RootLayout() {
               href="/add_note"
               options={{ title: "Add a note", drawerLabel: "Add a note" }}
             />
+            <Drawer.Screen
+              name="settings"
+              href="/settings"
+              options={{ title: "Settings", drawerLabel: "Settings" }}
+            />
           </Drawer>
         </NotesProvider>
       </SQLiteProvider>
