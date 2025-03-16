@@ -32,14 +32,16 @@ export default function AddNote() {
     <View style={styles.container}>
       {/* <BaseText>Add note</BaseText> */}
       {/* <BackButton /> */}
-      <TextInput style={styles.title} onChangeText={setTitle} value={title} />
-      <TextInput
-        style={styles.body}
-        onChangeText={setBody}
-        value={body}
-        multiline
-        textAlignVertical={"top"}
-      />
+      <View style={styles.note}>
+        <TextInput style={styles.title} onChangeText={setTitle} value={title} />
+        <TextInput
+          style={styles.body}
+          onChangeText={setBody}
+          value={body}
+          multiline
+          textAlignVertical={"top"}
+        />
+      </View>
 
       <Button onPress={addNote} title="Add" />
     </View>
@@ -48,18 +50,29 @@ export default function AddNote() {
 
 const styles = StyleSheet.create({
   container: {
-    padding: 14,
+    paddingHorizontal: 14,
+    paddingVertical: 20,
+    justifyContent: "space-between",
+    flexDirection: "column",
+    flex: 1,
+  },
+  note: {
+    flex: 1,
   },
   title: {
-    margin: 10,
-    padding: 10,
-    borderWidth: 1,
-    backgroundColor: "lightgrey",
+    paddingVertical: 10,
+    paddingHorizontal: 6,
+    marginBottom: 8,
+    fontSize: 20,
+    backgroundColor: "white",
+    fontWeight: "bold",
   },
   body: {
-    margin: 10,
-    padding: 10,
-    borderWidth: 1,
-    backgroundColor: "lightgrey",
+    paddingVertical: 10,
+    paddingHorizontal: 6,
+    fontSize: 18,
+    backgroundColor: "white",
+    marginBottom: 8,
+    flexGrow: 1,
   },
 });

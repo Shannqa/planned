@@ -24,14 +24,7 @@ export default function AllNotes() {
         columnWrapperStyle={styles.row}
         renderItem={({ item }) => (
           <View style={styles.singleNote}>
-            <Link
-              href={{
-                pathname: "/notes/[id]",
-                params: { id: item.id },
-              }}
-              style={styles.box}
-              asChild
-            >
+            <Link href={`notes/${item.id}/view`} style={styles.box} asChild>
               <Pressable>
                 <View style={styles.box}>
                   <Text style={styles.title}>{item.title}</Text>
