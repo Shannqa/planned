@@ -3,15 +3,34 @@ import { SQLiteProvider, useSQLiteContext } from "expo-sqlite";
 import * as SQLite from "expo-sqlite";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import NotesProvider from "../helpers/notes_provider";
-import { View, Text, TextInput, StyleSheet, Button, Link } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  StyleSheet,
+  Button,
+  Link,
+  useColorScheme,
+} from "react-native";
 import { Drawer } from "expo-router/drawer";
-
+import { lightColors, darkColors, setStyle } from "../helpers/themes";
 export default function RootLayout() {
+  let theme = useColorScheme();
+  let colors = theme == "dark" ? darkColors : lightColors;
   return (
     <GestureHandlerRootView>
       <SQLiteProvider databaseName="notes.db">
         <NotesProvider>
-          <Drawer initialRouteName="index">
+          <Drawer
+            initialRouteName="index"
+            screenOptions={{
+              drawerActiveBackgroundColor: "green",
+              drawerStyle: {
+                backgroundColor: colors.bg_secondary,
+                color: colors.font,
+              },
+            }}
+          >
             <Drawer.Screen
               name="index"
               href="/"
