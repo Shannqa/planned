@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { Link } from "expo-router";
 import {
   View,
@@ -11,29 +11,33 @@ import {
 } from "react-native";
 import { useSQLiteContext } from "expo-sqlite";
 import { AppContext } from "../../helpers/notes_provider";
-import { colors } from "../../helpers/themes";
-import { Appearance } from "react-native";
+import { lightColors, darkColors, setStyle } from "../../helpers/themes";
 
 export default function AllNotes() {
   const { notes, setNotes } = useContext(AppContext);
+  let theme = useColorScheme();
+  let colors = theme == "dark" ? dark : light;
   const db = useSQLiteContext();
-  const theme = useColorScheme();
-  console.log(colors.bg_primary[theme]);
+
   return (
-    <View style={[styles.container, colors.bg_primary[theme]]}>
+    <View style={setStyle("container", styles, colors)}>
       <FlatList
         data={notes}
         keyExtractor={(item) => item.id.toString()}
         numColumns={2}
         columnWrapperStyle={styles.row}
         renderItem={({ item }) => (
-          <View style={styles.singleNote}>
-            <Link href={`notes/${item.id}/view`} style={styles.box} asChild>
+          <View style={setStyle("singleNote", styles, colors)}>
+            <Link href={`notes/${item.id}/view`} asChild>
               <Pressable>
-                <View style={styles.box}>
-                  <Text style={styles.title}>{item.title}</Text>
-                  <Text>{item.body}</Text>
-                  <Text>{item.id}</Text>
+                <View>
+                  <Text style={setStyle("title", styles, colors)}>
+                    {item.title}
+                  </Text>
+                  <Text style={setStyle("text", styles, colors)}>
+                    {item.body}
+                  </Text>
+                  <Text tyle={setStyle("text", styles, colors)}>{item.id}</Text>
                 </View>
               </Pressable>
             </Link>
@@ -45,20 +49,10 @@ export default function AllNotes() {
 }
 
 const styles = StyleSheet.create({
-  theme: {
-    light: "green",
-    dark: "red",
-  },
   container: {
     padding: 14,
     flex: 1,
     width: "100%",
-  },
-  lightContainer: {
-    backgroundColor: "#FFFFFF",
-  },
-  darkContainer: {
-    backgroundColor: "#000000",
   },
   singleNote: {
     margin: 4,
@@ -71,16 +65,46 @@ const styles = StyleSheet.create({
     height: 150,
     justifyContent: "flex-start",
     alignItems: "flex-start",
-    boxShadow: "2 2 2 lightgrey",
-    backgroundColor: colors.bg_primary,
   },
-  row: {},
   title: {
     fontWeight: "bold",
     fontSize: 17,
   },
+  text: {},
   box: {
     width: "100%",
     height: "100%",
+  },
+});
+
+const light = StyleSheet.create({
+  container: {
+    backgroundColor: lightColors.bg_primary,
+  },
+  singleNote: {
+    backgroundColor: lightColors.bg_secondary,
+    boxShadow: "2 2 2 lightgrey",
+  },
+  title: {
+    color: lightColors.font,
+  },
+  text: {
+    color: lightColors.font,
+  },
+});
+
+const dark = StyleSheet.create({
+  container: {
+    backgroundColor: darkColors.bg_primary,
+  },
+  singleNote: {
+    backgroundColor: darkColors.bg_secondary,
+    boxShadow: "2 2 2 rgba(0, 0, 0, 0.8)",
+  },
+  title: {
+    color: darkColors.font,
+  },
+  text: {
+    color: darkColors.font,
   },
 });

@@ -1,0 +1,7 @@
+- formatting of notes
+- date.now button
+- save date of creation and date of last edit
+- password to access all notes / a category
+- categories
+- bin
+- archive
