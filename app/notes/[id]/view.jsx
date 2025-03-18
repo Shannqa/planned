@@ -2,9 +2,12 @@ import React, { useContext, useEffect, useState } from "react";
 import { Text, View, StyleSheet, Button } from "react-native";
 import { useLocalSearchParams, Stack, Link } from "expo-router";
 import { AppContext } from "../../../helpers/notes_provider";
+import { lightColors, darkColors, setStyle } from "../../helpers/themes";
 
 export default function ViewNote() {
   const params = useLocalSearchParams();
+  let theme = useColorScheme();
+  let colors = theme == "dark" ? dark : light;
   const { notes, setNotes } = useContext(AppContext);
   const [note, setNote] = useState({ id: "", title: "", body: "" });
 
@@ -24,15 +27,15 @@ export default function ViewNote() {
   }, []);
 
   return (
-    <View style={styles.container}>
+    <View style={setStyle("container", styles, colors)}>
       <Stack.Screen
         options={{
           title: `Note id ${params.id}`,
         }}
       />
       <View style={styles.note}>
-        <Text style={styles.title}>{note.title}</Text>
-        <Text style={styles.body}>{note.body}</Text>
+        <Text style={setStyle("title", styles, colors)}>{note.title}</Text>
+        <Text style={setStyle("body", styles, colors)}>{note.body}</Text>
       </View>
       <Link href="./edit" asChild>
         <Button title="Edit" />
@@ -57,7 +60,6 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 6,
     fontSize: 20,
-    backgroundColor: "white",
     fontWeight: "bold",
   },
   body: {
@@ -65,8 +67,35 @@ const styles = StyleSheet.create({
     paddingHorizontal: 6,
     fontSize: 18,
     padding: 4,
-    backgroundColor: "white",
     marginBottom: 8,
     flexGrow: 1,
+  },
+});
+
+const light = StyleSheet.create({
+  container: {
+    backgroundColor: lightColors.secondary,
+  },
+  title: {
+    backgroundColor: lightColors.primary,
+    boxShadow: "2 2 2 lightgrey",
+    color: lightColors.font,
+  },
+  text: {
+    color: lightColors.font,
+  },
+});
+
+const dark = StyleSheet.create({
+  container: {
+    backgroundColor: darkColors.secondary,
+  },
+  title : {
+    backgroundColor: darkColors.primary,
+    boxShadow: "2 2 2 rgba(0, 0, 0, 0.8)",
+    color: darkColors.font,
+  },
+  text: {
+    color: darkColors.font,
   },
 });

@@ -79,10 +79,10 @@ const styles = StyleSheet.create({
 
 const light = StyleSheet.create({
   container: {
-    backgroundColor: lightColors.bg_primary,
+    backgroundColor: lightColors.secondary,
   },
   singleNote: {
-    backgroundColor: lightColors.bg_secondary,
+    backgroundColor: lightColors.primary,
     boxShadow: "2 2 2 lightgrey",
   },
   title: {
@@ -95,10 +95,10 @@ const light = StyleSheet.create({
 
 const dark = StyleSheet.create({
   container: {
-    backgroundColor: darkColors.bg_primary,
+    backgroundColor: darkColors.secondary,
   },
   singleNote: {
-    backgroundColor: darkColors.bg_secondary,
+    backgroundColor: darkColors.primary,
     boxShadow: "2 2 2 rgba(0, 0, 0, 0.8)",
   },
   title: {

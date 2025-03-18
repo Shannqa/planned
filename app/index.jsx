@@ -13,10 +13,6 @@ import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
 import { useEffect, useState } from "react";
 
 export default function Home() {
-  const [version, setVersion] = useState("");
-  const [title, setTitle] = useState("");
-  const [body, setBody] = useState("");
-
   return (
     <SafeAreaProvider>
       <SafeAreaView>
