@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { SQLiteProvider, useSQLiteContext } from "expo-sqlite";
 import * as SQLite from "expo-sqlite";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import NotesProvider from "../helpers/notes_provider";
+import { AppContext } from "../helpers/notes_provider";
 import {
   View,
   Text,
@@ -14,9 +14,11 @@ import {
 } from "react-native";
 import { Drawer } from "expo-router/drawer";
 import { lightColors, darkColors, setStyle } from "../helpers/themes";
+
 export default function RootLayout() {
-  let theme = useColorScheme();
+  const { theme, setTheme } = useContext(AppContext);
   let colors = theme == "dark" ? darkColors : lightColors;
+
   return (
     <GestureHandlerRootView>
       <SQLiteProvider databaseName="notes.db">

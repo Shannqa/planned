@@ -14,7 +14,7 @@ export function setStyle(type, styles, colors) {
         styleArray.push(styles[type[i]]);
         styleArray.push(colors[type[i]]);
       }
-      return Stylesheet.compose(...styleArray);
+      return StyleSheet.compose(...styleArray);
     } else {
       return "";
     }
