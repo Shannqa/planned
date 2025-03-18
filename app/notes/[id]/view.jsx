@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { Text, View, StyleSheet, Button } from "react-native";
 import { useLocalSearchParams, Stack, Link } from "expo-router";
 import { AppContext } from "../../../helpers/notes_provider";
-import { lightColors, darkColors, setStyle } from "../../helpers/themes";
+import { lightColors, darkColors, setStyle } from "../../../helpers/themes";
 
 export default function ViewNote() {
   const params = useLocalSearchParams();
@@ -90,7 +90,7 @@ const dark = StyleSheet.create({
   container: {
     backgroundColor: darkColors.secondary,
   },
-  title : {
+  title: {
     backgroundColor: darkColors.primary,
     boxShadow: "2 2 2 rgba(0, 0, 0, 0.8)",
     color: darkColors.font,

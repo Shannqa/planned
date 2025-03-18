@@ -5,7 +5,7 @@ export const AppContext = createContext({
   notes: [],
   setNotes: () => {},
   settings: [],
-  setSettings: () => {}
+  setSettings: () => {},
 });
 
 export default function DatabaseProvider({ children }) {
@@ -38,14 +38,14 @@ export default function DatabaseProvider({ children }) {
   useEffect(() => {
     fetchDb();
   }, [db]);
-
+  console.log(settings);
   return (
     <AppContext.Provider
       value={{
         notes,
         setNotes,
         settings,
-        setSettings
+        setSettings,
       }}
     >
       {children}
