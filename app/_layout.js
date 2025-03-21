@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { SQLiteProvider, useSQLiteContext } from "expo-sqlite";
 import * as SQLite from "expo-sqlite";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { AppContext } from "../helpers/notes_provider";
+import { AppContext } from "../helpers/context_provider";
 import {
   View,
   Text,
@@ -22,7 +22,7 @@ export default function RootLayout() {
   return (
     <GestureHandlerRootView>
       <SQLiteProvider databaseName="notes.db">
-        <NotesProvider>
+        <ContextProvider>
           <Drawer
             initialRouteName="index"
             screenOptions={{
@@ -54,7 +54,7 @@ export default function RootLayout() {
               options={{ title: "Settings", drawerLabel: "Settings" }}
             />
           </Drawer>
-        </NotesProvider>
+        </ContextProvider>
       </SQLiteProvider>
     </GestureHandlerRootView>
   );
