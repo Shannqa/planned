@@ -9,16 +9,16 @@ import {
   Pressable,
   useColorScheme,
 } from "react-native";
-import { useSQLiteContext } from "expo-sqlite";
-import { AppContext } from "../../helpers/notes_provider";
+import { NotesContext } from "../../helpers/notes_provider";
 import { lightColors, darkColors, setStyle } from "../../helpers/themes";
+import { SettingsContext } from "../../helpers/settings_provider";
 
 export default function AllNotes() {
-  const { notes, setNotes } = useContext(AppContext);
-  let theme = useColorScheme();
-  let colors = theme == "dark" ? dark : light;
-  const db = useSQLiteContext();
-
+  const { notes, setNotes } = useContext(NotesContext);
+  const { currentTheme, setCurrentTheme } = useContext(SettingsContext);
+  let colors = currentTheme == "dark" ? darkColors : lightColors;
+  console.log(notes);
+  console.log(colors);
   return (
     <View style={setStyle("container", styles, colors)}>
       <FlatList

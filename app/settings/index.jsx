@@ -1,91 +1,85 @@
 import { Link } from "expo-router";
-import { View, Text, StyleSheet, Button } from "react-native";
+import { View, Text, StyleSheet, Button, useColorScheme } from "react-native";
 import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
 import { useEffect, useState, useMemo, useContext } from "react";
 import { lightColors, darkColors, setStyle } from "../../helpers/themes";
 import { useSQLiteContext } from "expo-sqlite";
-import { AppContext } from "../../helpers/notes_provider";
+import { SettingsContext } from "../../helpers/settings_provider";
 import RadioGroup from "react-native-radio-buttons-group";
 
 export default function Settings() {
-  const [selectedTheme, setSelectedTheme] = useState("");
-  const { notes, setNotes, settings, setSettings } = useContext(AppContext);
-
+  const { settings, updateSetting, currentTheme, themeBehavior } =
+    useContext(SettingsContext);
+  let systemTheme = useColorScheme();
+  const [selectedTheme, setSelectedTheme] = useState(
+    themeBehavior == "auto" ? themeBehavior : currentTheme
+  );
+  let colors = currentTheme == "dark" ? darkColors : lightColors;
   const db = useSQLiteContext();
 
   const radioTheme = useMemo(() => [
     {
-      id: "theme0",
+      id: "auto",
       label: "Auto, use device preference",
       value: "auto",
     },
     {
-      id: "theme1",
+      id: "light",
       label: "Light mode",
       value: "light",
     },
     {
-      id: "theme2",
+      id: "dark",
       label: "Dark mode",
-      value: "auto",
+      value: "dark",
     },
   ]);
 
-  useEffect(() => {
-    console.log(selectedTheme);
-    console.log("settings", settings);
-
-    async function checkDb() {
-      const resultSettings = await db.getAllAsync(
-        "SELECT * FROM settings WHERE item = ?",
-        "theme"
-      );
-      console.log("result: ", resultSettings);
-      if (resultSettings.length == 0) {
-        await db.runAsync(
-          "INSERT INTO settings (item, value) VALUES (?, ?);",
-          "theme",
-          selectedTheme
-        );
-        setSettings(resultSettings); // only theme for now
-      } else if (resultSettings.length == 1) {
-        await db.runAsync(
-          "UPDATE settings SET value = ? WHERE item = ?",
-          selectedTheme,
-          "theme"
-        );
+  function saveTheme(id) {
+    setSelectedTheme(id);
+    const upp = async () => {
+      await updateSetting("theme", id);
+      if (id == "auto") {
+        await updateSetting("themeBehavior", "auto");
+      } else {
+        await updateSetting("themeBehavior", "manual");
       }
-      setSettings(resultSettings); // only theme for now
-    }
+    };
+    upp();
+    // theme behavior: manual / auto
+  }
 
-    checkDb();
-    // async function addToDb() {
-    //   await db.runAsync(
-    //     "INSERT INTO settings (item, value) VALUES (?, ?);",
-    //     "theme",
-    //     selectedTheme
-    //   );
+  // function saveTheme(id) {
+  //   setSelectedTheme(id);
+  //   if (id == "light" || id == "dark") {
+  //     setCurrentTheme(id);
+  //   } else {
+  //     setCurrentTheme(systemTheme);
+  //   }
+  //   const addToDb = async () => {
+  //     await db.runAsync(
+  //       "INSERT OR REPLACE INTO settings (item, value) VALUES (?, ?)",
+  //       "theme",
+  //       id
+  //     );
+  //   };
+  //   addToDb();
+  //   console.log(id);
+  // }
 
-    // addToDb();
-    // }
-    // const changeSettings = async () => {
-    //   if (selectedTheme) {
-    //     // await db.runAsync(
-    //     //   "INSERT INTO settings (title, body) VALUES (?, ?);",
-    //     //   title,
-    //     //   body
-    //     // );
-    //   }
-    // };
-  }, [db, selectedTheme]);
+  // async function dropSettings() {
+  //   await db.execAsync("DROP TABLE settings");
+  // }
+  // dropSettings();
 
+  console.log("selectedTheme", selectedTheme);
   return (
     <View style={styles.container}>
       <View>
         <Text style={styles.text}>Choose your preferred theme</Text>
         <RadioGroup
           radioButtons={radioTheme}
-          onPress={setSelectedTheme}
+          onPress={saveTheme}
           selectedId={selectedTheme}
         />
       </View>

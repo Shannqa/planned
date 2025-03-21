@@ -1,14 +1,15 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Text, View, StyleSheet, Button } from "react-native";
 import { useLocalSearchParams, Stack, Link } from "expo-router";
-import { AppContext } from "../../../helpers/notes_provider";
+import { NotesContext } from "../../../helpers/notes_provider";
+import { SettingsContext } from "../../../helpers/settings_provider";
 import { lightColors, darkColors, setStyle } from "../../../helpers/themes";
 
 export default function ViewNote() {
   const params = useLocalSearchParams();
-  let theme = useColorScheme();
-  let colors = theme == "dark" ? dark : light;
-  const { notes, setNotes } = useContext(AppContext);
+  const { currentTheme, setCurrentTheme } = useContext(SettingsContext);
+  let colors = currentTheme == "dark" ? darkColors : lightColors;
+  const { notes, setNotes } = useContext(NotesContext);
   const [note, setNote] = useState({ id: "", title: "", body: "" });
 
   useEffect(() => {

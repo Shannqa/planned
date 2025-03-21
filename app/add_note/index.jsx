@@ -2,15 +2,16 @@ import React, { useContext, useState, useEffect } from "react";
 import { Link } from "expo-router";
 import { View, Text, TextInput, StyleSheet, Button } from "react-native";
 import { useSQLiteContext } from "expo-sqlite";
-import { AppContext } from "../../helpers/notes_provider";
+import { NotesContext } from "../../helpers/notes_provider";
 import { lightColors, darkColors, setStyle } from "../../helpers/themes";
+import { SettingsContext } from "../../helpers/settings_provider";
 
 export default function AddNote() {
-  let theme = useColorScheme();
-  let colors = theme == "dark" ? dark : light;
+  const { currentTheme, setCurrentTheme } = useContext(SettingsContext);
+  let colors = currentTheme == "dark" ? darkColors : lightColors;
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
-  const { notes, setNotes } = useContext(AppContext);
+  const { notes, setNotes } = useContext(NotesContext);
   const db = useSQLiteContext();
 
   const fetchNotes = async () => {
@@ -34,7 +35,11 @@ export default function AddNote() {
   return (
     <View style={setStyle("container", styles, colors)}>
       <View style={styles.note}>
-        <TextInput style={setStyle("title", styles, colors)} onChangeText={setTitle} value={title} />
+        <TextInput
+          style={setStyle("title", styles, colors)}
+          onChangeText={setTitle}
+          value={title}
+        />
         <TextInput
           style={setStyle("body", styles, colors)}
           onChangeText={setBody}
@@ -104,7 +109,7 @@ const dark = StyleSheet.create({
     boxShadow: "2 2 2 rgba(0, 0, 0, 0.8)",
     color: darkColors.font,
   },
-    body: {
+  body: {
     backgroundColor: darkColors.primary,
     boxShadow: "2 2 2 rgba(0, 0, 0, 0.8)",
     color: darkColors.font,
