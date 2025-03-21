@@ -7,7 +7,7 @@ export const SettingsContext = createContext({
   settings: [],
   setSettings: () => {},
   currentTheme: "",
-  themeBehavior: "() => {}",
+  themeBehavior: () => {},
 });
 
 export default function SettingsProvider({ children }) {
@@ -131,6 +131,7 @@ export default function SettingsProvider({ children }) {
         settings,
         updateSetting,
         currentTheme,
+        themeBehavior,
       }}
     >
       {children}

@@ -72,7 +72,14 @@ export default function Settings() {
   // }
   // dropSettings();
 
-  console.log("selectedTheme", selectedTheme);
+  console.log(
+    "selectedTheme",
+    selectedTheme,
+    "currentTheme",
+    currentTheme,
+    "themeBehavior",
+    themeBehavior
+  );
   return (
     <View style={styles.container}>
       <View>
