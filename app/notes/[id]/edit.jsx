@@ -1,19 +1,24 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Text, View, StyleSheet, TextInput, Button } from "react-native";
-import { useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams, router } from "expo-router";
 import { Stack } from "expo-router";
-import { NotesContext } from "../../../helpers/notes_provider";
+import { NotesContext, getNotes } from "../../../helpers/notes_provider";
 import { SettingsContext } from "../../../helpers/settings_provider";
 import { lightColors, darkColors, setStyle } from "../../../helpers/themes";
+import { editNote } from "../../../helpers/sql_notes";
+import { useSQLiteContext } from "expo-sqlite";
 
 export default function EditNote() {
   const params = useLocalSearchParams();
   const { currentTheme, setCurrentTheme } = useContext(SettingsContext);
   let colors = currentTheme == "dark" ? darkColors : lightColors;
-  const { notes, setNotes } = useContext(NotesContext);
+  const { notes, setNotes, getNotes } = useContext(NotesContext);
   const [note, setNote] = useState({ id: "", title: "", body: "" });
   const [titleFocused, setTitleFocused] = useState(false);
   const [bodyFocused, setBodyFocused] = useState(false);
+  const [title, setTitle] = useState("");
+  const [body, setBody] = useState("");
+  const db = useSQLiteContext();
 
   useEffect(() => {
     if (notes && params.id) {
@@ -25,13 +30,22 @@ export default function EditNote() {
             title: notes[i].title,
             body: notes[i].body,
           });
+          setTitle(notes[i].title);
+          setBody(notes[i].body);
         }
       }
     }
   }, []);
 
+  async function updateNote() {
+    // console.log(note.id, title, body);
+    await editNote(db, note.id, title, body);
+    getNotes(db);
+    router.back();
+  }
+
   return (
-    <View style={setStyle("contain", styles, colors)}>
+    <View style={setStyle("container", styles, colors)}>
       <Stack.Screen
         options={{
           title: `Note id ${params.id}`,
@@ -39,9 +53,10 @@ export default function EditNote() {
       />
       <View style={styles.note}>
         <TextInput
-          value={note.title}
+          value={title}
           onFocus={() => setTitleFocused(true)}
           onBlur={() => setTitleFocused(false)}
+          onChangeText={setTitle}
           style={
             titleFocused
               ? setStyle(["title", "focused"], styles, colors)
@@ -49,9 +64,10 @@ export default function EditNote() {
           }
         />
         <TextInput
-          value={note.body}
+          value={body}
           onFocus={() => setBodyFocused(true)}
           onBlur={() => setBodyFocused(false)}
+          onChangeText={setBody}
           style={
             bodyFocused
               ? setStyle(["body", "focused"], styles, colors)
@@ -59,7 +75,7 @@ export default function EditNote() {
           }
         />
       </View>
-      <Button title="Save" />
+      <Button title="Save" onPress={updateNote} />
     </View>
   );
 }

@@ -38,59 +38,52 @@ export const getNoteFromDb = async (db, id) => {
     } else {
       return null;
     }
-} catch(error) {
-  console.log(error);
-  return null;
-}
-}
-
-
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
+};
 
 // add one note
 export const addNote = async (db, title, body) => {
   try {
-      await db.runAsync(
-        "INSERT INTO notes (title, body) VALUES (?, ?);",
-        title,
-        body
-      );
-      return true;
-    } catch(error) {
-      console.log(error);
-      return false;
-    }
+    await db.runAsync(
+      "INSERT INTO notes (title, body) VALUES (?, ?);",
+      title,
+      body
+    );
+    return true;
+  } catch (error) {
+    console.log(error);
+    return false;
   }
-    
-    
+};
+
 // edit one note
 export const editNote = async (db, id, title, body) => {
   try {
     const update = await db.runAsync(
-        "UPDATE notes SET title = ?, body = ?, WHERE id = ?",
-        title,
-        body,
-        id
-      );
-      console.log(update)
-      return true;
-    } catch(error) {
-      console.log(error);
-      return false;
-    }
+      "UPDATE notes SET title = ?, body = ? WHERE id = ?",
+      title,
+      body,
+      id
+    );
+    // console.log(update);
+    return true;
+  } catch (error) {
+    console.log(error);
+    return false;
   }
-
+};
 
 // delete one note
 export const deleteNote = async (db, id, title, body) => {
   try {
-    const del = await db.runAsync(
-        "DELETE FROM notes WHERE id = ?",
-        id
-      );
-      console.log(del)
-      return true;
-    } catch(error) {
-      console.log(error);
-      return false;
-    }
+    const del = await db.runAsync("DELETE FROM notes WHERE id = ?", id);
+    console.log(del);
+    return true;
+  } catch (error) {
+    console.log(error);
+    return false;
   }
+};

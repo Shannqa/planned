@@ -2,9 +2,10 @@ import React, { useContext, useState, useEffect } from "react";
 import { Link } from "expo-router";
 import { View, Text, TextInput, StyleSheet, Button } from "react-native";
 import { useSQLiteContext } from "expo-sqlite";
-import { NotesContext } from "../../helpers/notes_provider";
+import { NotesContext, getNotes } from "../../helpers/notes_provider";
 import { lightColors, darkColors, setStyle } from "../../helpers/themes";
 import { SettingsContext } from "../../helpers/settings_provider";
+import { addNote } from "../../helpers/sql_notes";
 
 export default function AddNote() {
   const { currentTheme, setCurrentTheme } = useContext(SettingsContext);
@@ -14,23 +15,13 @@ export default function AddNote() {
   const { notes, setNotes } = useContext(NotesContext);
   const db = useSQLiteContext();
 
-  const fetchNotes = async () => {
-    const result = await db.getAllAsync("SELECT * FROM notes;");
-    setNotes(result);
-  };
-
-  const addNote = async () => {
-    if (title && body) {
-      await db.runAsync(
-        "INSERT INTO notes (title, body) VALUES (?, ?);",
-        title,
-        body
-      );
-      setTitle("");
-      setBody("");
-      fetchNotes();
-    }
-  };
+  async function addNoteToDb() {
+    const add = await addNote(db, title, body);
+    setTitle("");
+    setBody("");
+    console.log(add);
+    getNotes();
+  }
 
   return (
     <View style={setStyle("container", styles, colors)}>
@@ -49,7 +40,7 @@ export default function AddNote() {
         />
       </View>
 
-      <Button onPress={addNote} title="Add" />
+      <Button onPress={addNoteToDb} title="Add" />
     </View>
   );
 }

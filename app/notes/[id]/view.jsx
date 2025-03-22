@@ -25,7 +25,7 @@ export default function ViewNote() {
         }
       }
     }
-  }, []);
+  }, [notes]);
 
   return (
     <View style={setStyle("container", styles, colors)}>
