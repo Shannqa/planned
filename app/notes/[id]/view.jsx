@@ -8,7 +8,7 @@ import { lightColors, darkColors, setStyle } from "../../../helpers/themes";
 export default function ViewNote() {
   const params = useLocalSearchParams();
   const { currentTheme, setCurrentTheme } = useContext(SettingsContext);
-  let colors = currentTheme == "dark" ? darkColors : lightColors;
+  let colors = currentTheme == "dark" ? dark : light;
   const { notes, setNotes } = useContext(NotesContext);
   const [note, setNote] = useState({ id: "", title: "", body: "" });
 
@@ -82,6 +82,11 @@ const light = StyleSheet.create({
     boxShadow: "2 2 2 lightgrey",
     color: lightColors.font,
   },
+  body: {
+    backgroundColor: lightColors.primary,
+    boxShadow: "2 2 2 lightgrey",
+    color: lightColors.font,
+  },
   text: {
     color: lightColors.font,
   },
@@ -92,6 +97,11 @@ const dark = StyleSheet.create({
     backgroundColor: darkColors.secondary,
   },
   title: {
+    backgroundColor: darkColors.primary,
+    boxShadow: "2 2 2 rgba(0, 0, 0, 0.8)",
+    color: darkColors.font,
+  },
+  body: {
     backgroundColor: darkColors.primary,
     boxShadow: "2 2 2 rgba(0, 0, 0, 0.8)",
     color: darkColors.font,

@@ -16,9 +16,9 @@ import { SettingsContext } from "../../helpers/settings_provider";
 export default function AllNotes() {
   const { notes, setNotes } = useContext(NotesContext);
   const { currentTheme, setCurrentTheme } = useContext(SettingsContext);
-  let colors = currentTheme == "dark" ? darkColors : lightColors;
-  console.log(notes);
-  console.log(colors);
+  let colors = currentTheme == "dark" ? dark : light;
+  // console.log(notes);
+  // console.log(colors);
   return (
     <View style={setStyle("container", styles, colors)}>
       <FlatList
@@ -28,7 +28,11 @@ export default function AllNotes() {
         columnWrapperStyle={styles.row}
         renderItem={({ item }) => (
           <View style={setStyle("singleNote", styles, colors)}>
-            <Link href={`notes/${item.id}/view`} asChild>
+            <Link
+              style={setStyle("box", styles, colors)}
+              href={`notes/${item.id}/view`}
+              asChild
+            >
               <Pressable>
                 <View>
                   <Text style={setStyle("title", styles, colors)}>
@@ -37,7 +41,6 @@ export default function AllNotes() {
                   <Text style={setStyle("text", styles, colors)}>
                     {item.body}
                   </Text>
-                  <Text tyle={setStyle("text", styles, colors)}>{item.id}</Text>
                 </View>
               </Pressable>
             </Link>
@@ -56,7 +59,7 @@ const styles = StyleSheet.create({
   },
   singleNote: {
     margin: 4,
-    padding: 4,
+    padding: 8,
     fontSize: 17,
     flexBasis: 1,
     flexGrow: 1,

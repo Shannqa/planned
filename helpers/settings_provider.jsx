@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect } from "react";
+import React, { createContext, useState, useEffect, useContext } from "react";
 import { useSQLiteContext } from "expo-sqlite";
 import { useColorScheme } from "react-native";
 import { createTable, getSettingsFromDb, setSettingInDb } from "./sql_settings";
@@ -29,7 +29,7 @@ export default function SettingsProvider({ children }) {
       if (dbSettings) {
         setSettings(dbSettings);
         addToContext(dbSettings);
-        console.log("dbSettings", dbSettings);
+        // console.log("dbSettings", dbSettings);
       } else {
         // set defaults
         const defaults = [
@@ -123,7 +123,7 @@ export default function SettingsProvider({ children }) {
   //   fetchSettings();
   // }, [db]);
 
-  console.log("currentTheme", currentTheme);
+  // console.log("currentTheme", currentTheme);
 
   return (
     <SettingsContext.Provider
@@ -138,3 +138,4 @@ export default function SettingsProvider({ children }) {
     </SettingsContext.Provider>
   );
 }
+export const useSettings = () => useContext(SettingsContext);

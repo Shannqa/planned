@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from "react";
-import { Link } from "expo-router";
+import { Link, router } from "expo-router";
 import { View, Text, TextInput, StyleSheet, Button } from "react-native";
 import { useSQLiteContext } from "expo-sqlite";
 import { NotesContext, getNotes } from "../../helpers/notes_provider";
@@ -9,7 +9,7 @@ import { addNote } from "../../helpers/sql_notes";
 
 export default function AddNote() {
   const { currentTheme, setCurrentTheme } = useContext(SettingsContext);
-  let colors = currentTheme == "dark" ? darkColors : lightColors;
+  let colors = currentTheme == "dark" ? dark : light;
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const { notes, setNotes } = useContext(NotesContext);
@@ -21,6 +21,7 @@ export default function AddNote() {
     setBody("");
     console.log(add);
     getNotes();
+    router.push("/notes"); // not working - doesnt navigate to notes
   }
 
   return (

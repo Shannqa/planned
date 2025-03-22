@@ -5,55 +5,74 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import NotesProvider from "../helpers/notes_provider";
 import { StyleSheet } from "react-native";
 import { Drawer } from "expo-router/drawer";
-import { lightColors, darkColors, setStyle } from "../helpers/themes";
+// import { lightColors, darkColors, setStyle } from "../helpers/themes";
 import SettingsProvider, {
   SettingsContext,
+  useSettings,
 } from "../helpers/settings_provider";
+import { StatusBar } from "expo-status-bar";
 
 export default function RootLayout() {
-  const { currentTheme, setCurrentTheme } = useContext(SettingsContext);
-  let colors = currentTheme == "dark" ? darkColors : lightColors;
-  // console.log(currentTheme);
   return (
     <GestureHandlerRootView>
       <SQLiteProvider databaseName="notes.db">
         <SettingsProvider>
           <NotesProvider>
-            <Drawer
-              initialRouteName="index"
-              screenOptions={{
-                drawerActiveBackgroundColor: "green",
-                drawerStyle: {
-                  backgroundColor: colors.bg_secondary,
-                  color: colors.font,
-                },
-              }}
-            >
-              <Drawer.Screen
-                name="index"
-                href="/"
-                options={{ title: "Home", drawerLabel: "Home" }}
-              />
-              <Drawer.Screen
-                name="notes"
-                href="/notes"
-                options={{ title: "All notes", drawerLabel: "All notes" }}
-              />
-              <Drawer.Screen
-                name="add_note"
-                href="/add_note"
-                options={{ title: "Add a note", drawerLabel: "Add a note" }}
-              />
-              <Drawer.Screen
-                name="settings"
-                href="/settings"
-                options={{ title: "Settings", drawerLabel: "Settings" }}
-              />
-            </Drawer>
+            <DrawerCustom />
           </NotesProvider>
         </SettingsProvider>
       </SQLiteProvider>
     </GestureHandlerRootView>
+  );
+}
+
+function DrawerCustom() {
+  const { currentTheme, setCurrentTheme } = useContext(SettingsContext);
+  let colors = currentTheme == "dark" ? dark : light;
+  return (
+    <>
+      <StatusBar
+        backgroundColor={colors.primary}
+        style={colors.statusBarColor}
+      />
+      <Drawer
+        initialRouteName="index"
+        screenOptions={{
+          drawerActiveBackgroundColor: colors.primary,
+          drawerActiveTintColor: colors.font,
+          drawerInactiveTintColor: colors.font,
+          drawerStyle: {
+            backgroundColor: colors.secondary,
+            width: 240,
+          },
+          headerStyle: {
+            backgroundColor: colors.primary,
+          },
+          headerTintColor: colors.font,
+        }}
+      >
+        <Drawer.Screen
+          name="index"
+          href="/"
+          options={{ title: "Home", drawerLabel: "Home" }}
+        />
+        <Drawer.Screen
+          name="notes"
+          href="/notes"
+          options={{ title: "All notes", drawerLabel: "All notes" }}
+        />
+        <Drawer.Screen
+          name="add_note"
+          href="/add_note"
+          options={{ title: "Add a note", drawerLabel: "Add a note" }}
+        />
+        <Drawer.Screen
+          name="settings"
+          href="/settings"
+          options={{ title: "Settings", drawerLabel: "Settings" }}
+        />
+      </Drawer>
+    </>
   );
 }
 
@@ -65,3 +84,16 @@ const styles = StyleSheet.create({
     padding: 14,
   },
 });
+export const light = {
+  primary: "#FFFFFF", // bg, front, lighter
+  secondary: "#F2F2F2", // bg, back, darker
+  font: "#000000",
+  statusBarColor: "dark",
+};
+
+export const dark = {
+  primary: "#1E1E1E", // bg, front, lighter
+  secondary: "#121212", // bg, back, darker
+  font: "#E0E0E0",
+  statusBarColor: "light",
+};

@@ -80,7 +80,7 @@ export const editNote = async (db, id, title, body) => {
 export const deleteNote = async (db, id, title, body) => {
   try {
     const del = await db.runAsync("DELETE FROM notes WHERE id = ?", id);
-    console.log(del);
+    // console.log(del);
     return true;
   } catch (error) {
     console.log(error);
