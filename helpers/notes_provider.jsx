@@ -1,5 +1,6 @@
 import React, { createContext, useState, useEffect } from "react";
 import { useSQLiteContext } from "expo-sqlite";
+import { createTable, getNotesFromDb, getNoteFromDb, addNote, editNote, deleteNote } from "./sql_notes";
 
 export const NotesContext = createContext({
   notes: [],
@@ -11,24 +12,34 @@ export default function NotesProvider({ children }) {
   const db = useSQLiteContext();
 
   useEffect(() => {
-    const createTable = async () => {
-      // create a table for notes if it doesnt exists
-      await db.execAsync(`CREATE TABLE IF NOT EXISTS notes (
-        id INTEGER PRIMARY KEY NOT null,
-        title TEXT,
-        body TEXT)`);
-    };
-    createTable();
+    // create a table for notes if it doesnt exists
+    const handleTable = async () => {
+    await createTable(db);
+    }
+    handleTable();
   }, []);
 
   useEffect(() => {
-    // fetch notes from db; returns an array of objects
     // const drop = async () => await db.execAsync("DROP TABLE notes");
     // drop();
-    const resultNotes = async () =>
-      await db.getAllAsync("SELECT * FROM notes;");
-    setNotes(resultNotes);
+
+    // get notes from the db
+    const getNotes = async () => {
+      const dbNotes = await getNotesFromDb(db);
+      if (dbNotes) {
+        setNotes(dbNotes);
+      }
+    }
+    getNotes();
   }, [db]);
+  
+  
+  async function addNote(db, title, body) {
+    editNote
+  }
+  
+  
+  
 
   return (
     <NotesContext.Provider
