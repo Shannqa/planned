@@ -13,12 +13,11 @@ import { NotesContext } from "../../helpers/notes_provider";
 import { lightColors, darkColors, setStyle } from "../../helpers/themes";
 import { SettingsContext } from "../../helpers/settings_provider";
 
-export default function AllNotes() {
+export default function Archive() {
   const { notes, setNotes } = useContext(NotesContext);
   const { currentTheme, setCurrentTheme } = useContext(SettingsContext);
   let colors = currentTheme == "dark" ? dark : light;
-  console.log(notes);
-  // console.log(colors);
+
   return (
     <View style={setStyle("container", styles, colors)}>
       <FlatList
@@ -49,7 +48,7 @@ export default function AllNotes() {
       />
       <View style={setStyle("buttonContainer", styles, colors)}>
         <View style={setStyle("addButton", styles, colors)}>
-          <Link href="notes/new_note/" asChild>
+          <Link href="/notes/add_note" asChild>
             <Pressable>
               <View>
                 <Text style={setStyle("addButtonText", styles, colors)}>+</Text>

@@ -1,47 +1,49 @@
-import React, { useContext, useState, useEffect } from "react";
-import { Link, router } from "expo-router";
-import { View, Text, TextInput, StyleSheet, Button } from "react-native";
+import React, { useContext, useEffect, useState } from "react";
+import { Text, View, StyleSheet, Button, TextInput } from "react-native";
+import { useLocalSearchParams, Stack, Link, router } from "expo-router";
+import { NotesContext } from "../../../helpers/notes_provider";
+import { SettingsContext } from "../../../helpers/settings_provider";
+import { lightColors, darkColors, setStyle } from "../../../helpers/themes";
+import { addNote } from "../../../helpers/sql_notes";
 import { useSQLiteContext } from "expo-sqlite";
-import { NotesContext, getNotes } from "../../helpers/notes_provider";
-import { lightColors, darkColors, setStyle } from "../../helpers/themes";
-import { SettingsContext } from "../../helpers/settings_provider";
-import { addNote } from "../../helpers/sql_notes";
 
-export default function AddNote() {
+export default function NewNote() {
   const { currentTheme, setCurrentTheme } = useContext(SettingsContext);
   let colors = currentTheme == "dark" ? dark : light;
+  const { notes, setNotes, getNotes } = useContext(NotesContext);
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
-  const { notes, setNotes } = useContext(NotesContext);
   const db = useSQLiteContext();
 
-  async function addNoteToDb() {
-    const add = await addNote(db, title, body);
-    setTitle("");
-    setBody("");
-    console.log(add);
-    getNotes();
-    router.push("/notes"); // not working - doesnt navigate to notes
+  async function addNewNote() {
+    await addNote(db, title, body);
+    getNotes(db);
+    // router.back();
+    router.push("/notes");
   }
 
   return (
     <View style={setStyle("container", styles, colors)}>
+      <Stack.Screen
+        options={{
+          title: "Add note",
+        }}
+      />
       <View style={styles.note}>
         <TextInput
-          style={setStyle("title", styles, colors)}
-          onChangeText={setTitle}
           value={title}
+          onChangeText={setTitle}
+          style={setStyle("title", styles, colors)}
         />
         <TextInput
-          style={setStyle("body", styles, colors)}
-          onChangeText={setBody}
           value={body}
+          onChangeText={setBody}
+          style={setStyle("body", styles, colors)}
           multiline
           textAlignVertical={"top"}
         />
       </View>
-
-      <Button onPress={addNoteToDb} title="Add" />
+      <Button title="Add note" onPress={addNewNote} />
     </View>
   );
 }
@@ -58,9 +60,9 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   title: {
+    marginBottom: 8,
     paddingVertical: 10,
     paddingHorizontal: 6,
-    marginBottom: 8,
     fontSize: 20,
     fontWeight: "bold",
   },
@@ -68,6 +70,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 6,
     fontSize: 18,
+    padding: 4,
     marginBottom: 8,
     flexGrow: 1,
   },

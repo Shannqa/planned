@@ -26,11 +26,13 @@ export function setStyle(type, styles, colors) {
 export const lightColors = {
   primary: "#FFFFFF", // bg, front, lighter
   secondary: "#F2F2F2", // bg, back, darker
+  detail: "lightblue",
   font: "#000000",
 };
 
 export const darkColors = {
   primary: "#1E1E1E", // bg, front, lighter
   secondary: "#121212", // bg, back, darker
+  detail: "green",
   font: "#E0E0E0",
 };

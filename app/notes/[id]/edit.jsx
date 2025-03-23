@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Text, View, StyleSheet, TextInput, Button } from "react-native";
-import { useLocalSearchParams, router } from "expo-router";
-import { Stack } from "expo-router";
+import { useLocalSearchParams, router, Stack } from "expo-router";
 import { NotesContext, getNotes } from "../../../helpers/notes_provider";
 import { SettingsContext } from "../../../helpers/settings_provider";
 import { lightColors, darkColors, setStyle } from "../../../helpers/themes";
@@ -41,7 +40,7 @@ export default function EditNote() {
     // console.log(note.id, title, body);
     await editNote(db, note.id, title, body);
     getNotes(db);
-    router.back();
+    router.push("/");
   }
 
   return (

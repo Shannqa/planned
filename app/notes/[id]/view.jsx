@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Text, View, StyleSheet, Button } from "react-native";
-import { useLocalSearchParams, Stack, Link } from "expo-router";
+import { useLocalSearchParams, Stack, Link, router } from "expo-router";
 import { NotesContext } from "../../../helpers/notes_provider";
 import { SettingsContext } from "../../../helpers/settings_provider";
 import { lightColors, darkColors, setStyle } from "../../../helpers/themes";
@@ -11,7 +11,7 @@ export default function ViewNote() {
   let colors = currentTheme == "dark" ? dark : light;
   const { notes, setNotes } = useContext(NotesContext);
   const [note, setNote] = useState({ id: "", title: "", body: "" });
-
+  // console.log(notes);
   useEffect(() => {
     if (notes && params.id) {
       // console.log(notes);
@@ -27,6 +27,10 @@ export default function ViewNote() {
     }
   }, [notes]);
 
+  function presser() {
+    router.back();
+  }
+
   return (
     <View style={setStyle("container", styles, colors)}>
       <Stack.Screen
@@ -34,6 +38,7 @@ export default function ViewNote() {
           title: `Note id ${params.id}`,
         }}
       />
+      <Button title="baaaack" onPress={presser} />
       <View style={styles.note}>
         <Text style={setStyle("title", styles, colors)}>{note.title}</Text>
         <Text style={setStyle("body", styles, colors)}>{note.body}</Text>

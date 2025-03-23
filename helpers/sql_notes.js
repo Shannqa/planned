@@ -1,11 +1,16 @@
 // create notes table
 export const createTable = async (db) => {
-  console.log("creating table...");
+  // console.log("creating table...");
   try {
     await db.execAsync(`CREATE TABLE IF NOT EXISTS notes (
         id INTEGER PRIMARY KEY NOT null,
         title TEXT,
-        body TEXT)`);
+        body TEXT,
+        category TEXT,
+        archive INTEGER DEFAULT FALSE,
+        bin INTEGER DEFAULT FALSE,
+        createdTimestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        lastEditTimestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP)`);
   } catch (error) {
     console.log(error);
   }
@@ -47,7 +52,7 @@ export const getNoteFromDb = async (db, id) => {
 // add one note
 export const addNote = async (db, title, body) => {
   try {
-    await db.runAsync(
+    const add = await db.runAsync(
       "INSERT INTO notes (title, body) VALUES (?, ?);",
       title,
       body
@@ -63,7 +68,7 @@ export const addNote = async (db, title, body) => {
 export const editNote = async (db, id, title, body) => {
   try {
     const update = await db.runAsync(
-      "UPDATE notes SET title = ?, body = ? WHERE id = ?",
+      "UPDATE notes SET title = ?, body = ? WHERE id = ?;",
       title,
       body,
       id

@@ -13,7 +13,7 @@ export const createTable = async (db) => {
 export const getSettingsFromDb = async (db) => {
   try {
     const dbSettings = await db.getAllAsync("SELECT * FROM settings");
-    console.log("db...", dbSettings);
+    // console.log("db...", dbSettings);
     if (dbSettings.length > 0) {
       return dbSettings;
     } else {
@@ -37,14 +37,14 @@ export const setSettingInDb = async (db, item, value) => {
         value,
         item
       );
-      console.log("update", item, value);
+      // console.log("update", item, value);
     } else {
       await db.runAsync(
         "INSERT INTO settings (item, value) VALUES (?, ?);",
         item,
         value
       );
-      console.log("insert", item, value);
+      // console.log("insert", item, value);
     }
   } catch (error) {
     console.log(error);

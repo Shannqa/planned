@@ -62,14 +62,19 @@ function DrawerCustom() {
           options={{ title: "All notes", drawerLabel: "All notes" }}
         />
         <Drawer.Screen
-          name="add_note"
-          href="/add_note"
-          options={{ title: "Add a note", drawerLabel: "Add a note" }}
-        />
-        <Drawer.Screen
           name="settings"
           href="/settings"
           options={{ title: "Settings", drawerLabel: "Settings" }}
+        />
+        <Drawer.Screen
+          name="archive"
+          href="/archive"
+          options={{ title: "Archive", drawerLabel: "Archive" }}
+        />
+        <Drawer.Screen
+          name="bin"
+          href="/bin"
+          options={{ title: "Bin", drawerLabel: "Bin" }}
         />
       </Drawer>
     </>

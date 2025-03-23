@@ -20,6 +20,8 @@ export default function NotesProvider({ children }) {
   const db = useSQLiteContext();
 
   useEffect(() => {
+    // const drop = async () => await db.execAsync("DROP TABLE notes");
+    // drop();
     // create a table for notes if it doesnt exists
     const handleTable = async () => {
       await createTable(db);
@@ -28,9 +30,6 @@ export default function NotesProvider({ children }) {
   }, []);
 
   useEffect(() => {
-    // const drop = async () => await db.execAsync("DROP TABLE notes");
-    // drop();
-
     // get notes from the db
     getNotes();
   }, [db]);

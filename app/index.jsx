@@ -7,15 +7,12 @@ import { lightColors, darkColors, setStyle } from "../helpers/themes";
 export default function Home() {
   const { currentTheme, setCurrentTheme } = useContext(SettingsContext);
   let colors = currentTheme == "dark" ? dark : light;
-  console.log("colors", colors, "currentTheme", currentTheme);
+  // console.log("colors", colors, "currentTheme", currentTheme);
   return (
     <View style={setStyle("container", styles, colors)}>
       {/* <BaseText>Home screen</BaseText> */}
       <Link style={setStyle("link", styles, colors)} href="/notes/">
         All notes
-      </Link>
-      <Link style={setStyle("link", styles, colors)} href="/add_note/">
-        Add a note
       </Link>
     </View>
   );
