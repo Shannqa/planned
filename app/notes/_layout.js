@@ -17,7 +17,6 @@ export default function Layout() {
       }}
     >
       <Stack.Screen name="index" options={{ headerShown: false }} />
-      <Stack.Screen name="add/add" />
       <Stack.Screen name="[id]/view" />
       <Stack.Screen name="[id]/edit" />
       <Stack.Screen name="new_note/" />

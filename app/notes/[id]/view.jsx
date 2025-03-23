@@ -27,10 +27,6 @@ export default function ViewNote() {
     }
   }, [notes]);
 
-  function presser() {
-    router.back();
-  }
-
   return (
     <View style={setStyle("container", styles, colors)}>
       <Stack.Screen
@@ -38,7 +34,6 @@ export default function ViewNote() {
           title: `Note id ${params.id}`,
         }}
       />
-      <Button title="baaaack" onPress={presser} />
       <View style={styles.note}>
         <Text style={setStyle("title", styles, colors)}>{note.title}</Text>
         <Text style={setStyle("body", styles, colors)}>{note.body}</Text>
