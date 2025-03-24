@@ -1,9 +1,11 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Text, View, StyleSheet, Button } from "react-native";
+import { Text, View, StyleSheet, Button, Pressable, Image } from "react-native";
 import { useLocalSearchParams, Stack, Link, router } from "expo-router";
 import { NotesContext } from "../../../helpers/notes_provider";
 import { SettingsContext } from "../../../helpers/settings_provider";
 import { lightColors, darkColors, setStyle } from "../../../helpers/themes";
+import ContextMenu from "../../../helpers/context_menu";
+import { useNavigation } from "@react-navigation/native";
 
 export default function ViewNote() {
   const params = useLocalSearchParams();
@@ -11,7 +13,13 @@ export default function ViewNote() {
   let colors = currentTheme == "dark" ? dark : light;
   const { notes, setNotes } = useContext(NotesContext);
   const [note, setNote] = useState({ id: "", title: "", body: "" });
-  // console.log(notes);
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  function openMenu() {
+    console.log("aa", menuOpen);
+    setMenuOpen(!menuOpen);
+  }
+
   useEffect(() => {
     if (notes && params.id) {
       // console.log(notes);
@@ -32,8 +40,14 @@ export default function ViewNote() {
       <Stack.Screen
         options={{
           title: `Note id ${params.id}`,
+          headerRight: () => (
+            <Pressable onPressIn={() => openMenu()} style={styles.menuButton}>
+              <Text>...</Text>
+            </Pressable>
+          ),
         }}
       />
+      <ContextMenu menuOpen={menuOpen} />
       <View style={styles.note}>
         <Text style={setStyle("title", styles, colors)}>{note.title}</Text>
         <Text style={setStyle("body", styles, colors)}>{note.body}</Text>
@@ -70,6 +84,11 @@ const styles = StyleSheet.create({
     padding: 4,
     marginBottom: 8,
     flexGrow: 1,
+  },
+  menuButton: {
+    backgroundColor: "green",
+    paddingHorizontal: 14,
+    paddingVertical: 20,
   },
 });
 
