@@ -7,16 +7,26 @@ import {
   addNote,
   editNote,
   deleteNote,
+  getNotesFromBin,
+  binNote,
+  archiveNotes,
+  setArchiveNotes,
 } from "./sql_notes";
 
 export const NotesContext = createContext({
   notes: [],
   setNotes: () => {},
   getNotes: () => {},
+  binNotes: [],
+  setBinNotes: () => {},
+  archiveNotes: [],
+  setArchiveNotes: () => {},
 });
 
 export default function NotesProvider({ children }) {
   const [notes, setNotes] = useState([]);
+  const [binNotes, setBinNotes] = useState([]);
+  const [archiveNotes, setArchiveNotes] = useState([]);
   const db = useSQLiteContext();
 
   useEffect(() => {
@@ -39,7 +49,19 @@ export default function NotesProvider({ children }) {
     if (dbNotes) {
       setNotes(dbNotes);
     }
+
+    // const DbBinNotes = await getNotesFromBin(db);
+    // if (DbBinNotes) {
+    //   setBinNotes(DbBinNotes);
+    // }
+    // console.log(DbBinNotes);
   };
+
+  // async function binit() {
+  //   const binnn = await binNote(db, 1);
+  //   console.log(binnn);
+  // }
+  // binit();
 
   return (
     <NotesContext.Provider
@@ -47,6 +69,10 @@ export default function NotesProvider({ children }) {
         notes,
         setNotes,
         getNotes,
+        binNotes,
+        setBinNotes,
+        archiveNotes,
+        setArchiveNotes,
       }}
     >
       {children}

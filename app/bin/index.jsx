@@ -14,14 +14,19 @@ import { lightColors, darkColors, setStyle } from "../../helpers/themes";
 import { SettingsContext } from "../../helpers/settings_provider";
 
 export default function Bin() {
-  const { notes, setNotes } = useContext(NotesContext);
+  const { notes, setNotes, binNotes, setBinNotes } = useContext(NotesContext);
   const { currentTheme, setCurrentTheme } = useContext(SettingsContext);
   let colors = currentTheme == "dark" ? dark : light;
+
+  useEffect(() => {
+    const bin = notes.filter((note) => note.bin == 1);
+    setBinNotes(bin);
+  }, [notes]);
 
   return (
     <View style={setStyle("container", styles, colors)}>
       <FlatList
-        data={notes}
+        data={binNotes}
         keyExtractor={(item) => item.id.toString()}
         numColumns={2}
         columnWrapperStyle={styles.row}
@@ -29,7 +34,7 @@ export default function Bin() {
           <View style={setStyle("singleNote", styles, colors)}>
             <Link
               style={setStyle("box", styles, colors)}
-              href={`notes/${item.id}/view`}
+              href={`bin/${item.id}/view`}
               asChild
             >
               <Pressable>
@@ -46,17 +51,6 @@ export default function Bin() {
           </View>
         )}
       />
-      <View style={setStyle("buttonContainer", styles, colors)}>
-        <View style={setStyle("addButton", styles, colors)}>
-          <Link href="/notes/add_note" asChild>
-            <Pressable>
-              <View>
-                <Text style={setStyle("addButtonText", styles, colors)}>+</Text>
-              </View>
-            </Pressable>
-          </Link>
-        </View>
-      </View>
     </View>
   );
 }

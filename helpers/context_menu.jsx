@@ -2,11 +2,16 @@ import React, { useContext, useEffect, useState } from "react";
 import { Text, View, StyleSheet, Button, Pressable } from "react-native";
 import { lightColors, darkColors, setStyle } from "./themes";
 import { SettingsContext } from "./settings_provider";
+import { binNote, archiveNote } from "./sql_notes";
+import { useSQLiteContext } from "expo-sqlite";
 
-export default function ContextMenu({ menuOpen }) {
+export default function ContextMenu({ menuOpen, noteId }) {
   const { currentTheme, setCurrentTheme } = useContext(SettingsContext);
   let colors = currentTheme == "dark" ? dark : light;
+  const db = useSQLiteContext();
 
+  // need to update context after moving note to the bin/archive
+  // might also change bin: 1, archive: 1 in db to state: bin/archive/open
   return (
     <View
       style={[
@@ -19,6 +24,7 @@ export default function ContextMenu({ menuOpen }) {
           pressed ? colors.menuPressed : colors.menuUnpressed,
           styles.menuItem,
         ]}
+        onPress={() => binNote(db, noteId)}
       >
         <Text style={styles.menuText}>Delete</Text>
       </Pressable>
@@ -27,6 +33,7 @@ export default function ContextMenu({ menuOpen }) {
           pressed ? colors.menuPressed : colors.menuUnpressed,
           styles.menuItem,
         ]}
+        onPress={() => archiveNote(db, noteId)}
       >
         <Text style={styles.menuText}>Archive</Text>
       </Pressable>

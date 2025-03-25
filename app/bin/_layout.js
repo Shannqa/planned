@@ -5,7 +5,7 @@ import { SettingsContext } from "../../helpers/settings_provider";
 export default function Layout() {
   const { currentTheme, setCurrentTheme } = useContext(SettingsContext);
   let colors = currentTheme == "dark" ? dark : light;
-  console.log("navi", currentTheme);
+
   return (
     <Stack
       initialRouteName="index"
@@ -17,6 +17,7 @@ export default function Layout() {
       }}
     >
       <Stack.Screen name="index" options={{ headerShown: false }} />
+      <Stack.Screen name="[id]/view" />
     </Stack>
   );
 }

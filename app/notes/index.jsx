@@ -17,8 +17,9 @@ export default function AllNotes() {
   const { notes, setNotes } = useContext(NotesContext);
   const { currentTheme, setCurrentTheme } = useContext(SettingsContext);
   let colors = currentTheme == "dark" ? dark : light;
-  // console.log(notes);
+  console.log(notes);
   // console.log(colors);
+
   return (
     <View style={setStyle("container", styles, colors)}>
       <FlatList

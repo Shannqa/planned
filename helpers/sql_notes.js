@@ -11,6 +11,18 @@ export const createTable = async (db) => {
         bin INTEGER DEFAULT FALSE,
         createdTimestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         lastEditTimestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP)`);
+
+    await db.execAsync(
+      `CREATE VIEW IF NOT EXISTS notesbin AS SELECT
+        id,
+        title,
+        body,
+        category,
+        archive,
+        bin,
+        createdTimestamp,
+        lastEditTimestamp FROM notes WHERE bin = 1`
+    );
   } catch (error) {
     console.log(error);
   }
@@ -20,6 +32,21 @@ export const createTable = async (db) => {
 export const getNotesFromDb = async (db) => {
   try {
     const dbNotes = await db.getAllAsync("SELECT * FROM notes");
+    if (dbNotes.length > 0) {
+      return dbNotes;
+    } else {
+      return null;
+    }
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
+};
+
+// get all notes from database
+export const getNotesFromBin = async (db) => {
+  try {
+    const dbNotes = await db.getAllAsync("SELECT * FROM notesbin");
     if (dbNotes.length > 0) {
       return dbNotes;
     } else {
@@ -74,6 +101,38 @@ export const editNote = async (db, id, title, body) => {
       id
     );
     // console.log(update);
+    return true;
+  } catch (error) {
+    console.log(error);
+    return false;
+  }
+};
+
+// move one note to bin
+export const binNote = async (db, id) => {
+  try {
+    const update = await db.runAsync(
+      "UPDATE notes SET bin = ? WHERE id = ?;",
+      1,
+      id
+    );
+    console.log(update);
+    return true;
+  } catch (error) {
+    console.log(error);
+    return false;
+  }
+};
+
+// move one note to bin
+export const archiveNote = async (db, id) => {
+  try {
+    const update = await db.runAsync(
+      "UPDATE notes SET archive = ? WHERE id = ?;",
+      1,
+      id
+    );
+    console.log(update);
     return true;
   } catch (error) {
     console.log(error);

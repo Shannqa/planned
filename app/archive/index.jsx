@@ -14,14 +14,20 @@ import { lightColors, darkColors, setStyle } from "../../helpers/themes";
 import { SettingsContext } from "../../helpers/settings_provider";
 
 export default function Archive() {
-  const { notes, setNotes } = useContext(NotesContext);
+  const { notes, setNotes, archiveNotes, setArchiveNotes } =
+    useContext(NotesContext);
   const { currentTheme, setCurrentTheme } = useContext(SettingsContext);
   let colors = currentTheme == "dark" ? dark : light;
+
+  useEffect(() => {
+    const archived = archiveNotes.filter((note) => note.archive == 1);
+    setArchiveNotes(archived);
+  }, [notes]);
 
   return (
     <View style={setStyle("container", styles, colors)}>
       <FlatList
-        data={notes}
+        data={archiveNotes}
         keyExtractor={(item) => item.id.toString()}
         numColumns={2}
         columnWrapperStyle={styles.row}
@@ -29,7 +35,7 @@ export default function Archive() {
           <View style={setStyle("singleNote", styles, colors)}>
             <Link
               style={setStyle("box", styles, colors)}
-              href={`notes/${item.id}/view`}
+              href={`archive/${item.id}/view`}
               asChild
             >
               <Pressable>
@@ -46,17 +52,6 @@ export default function Archive() {
           </View>
         )}
       />
-      <View style={setStyle("buttonContainer", styles, colors)}>
-        <View style={setStyle("addButton", styles, colors)}>
-          <Link href="/notes/add_note" asChild>
-            <Pressable>
-              <View>
-                <Text style={setStyle("addButtonText", styles, colors)}>+</Text>
-              </View>
-            </Pressable>
-          </Link>
-        </View>
-      </View>
     </View>
   );
 }
