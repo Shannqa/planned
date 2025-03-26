@@ -11,6 +11,7 @@ import SettingsProvider, {
   useSettings,
 } from "../helpers/settings_provider";
 import { StatusBar } from "expo-status-bar";
+import Entypo from "@expo/vector-icons/Entypo";
 
 export default function RootLayout() {
   return (
@@ -54,27 +55,57 @@ function DrawerCustom() {
         <Drawer.Screen
           name="index"
           href="/"
-          options={{ title: "Home", drawerLabel: "Home" }}
+          options={{
+            title: "Home",
+            drawerLabel: "Home",
+            drawerIcon: ({ focused, size }) => (
+              <Entypo name="home" size={20} color="black" />
+            ),
+          }}
         />
         <Drawer.Screen
           name="notes"
           href="/notes"
-          options={{ title: "All notes", drawerLabel: "All notes" }}
+          options={{
+            title: "All notes",
+            drawerLabel: "All notes",
+            drawerIcon: ({ focused, size }) => (
+              <Entypo name="list" size={20} color="black" />
+            ),
+          }}
         />
         <Drawer.Screen
           name="settings"
           href="/settings"
-          options={{ title: "Settings", drawerLabel: "Settings" }}
+          options={{
+            title: "Settings",
+            drawerLabel: "Settings",
+            drawerIcon: ({ focused, size }) => (
+              <Entypo name="cog" size={20} color="black" />
+            ),
+          }}
         />
         <Drawer.Screen
           name="archive"
           href="/archive"
-          options={{ title: "Archive", drawerLabel: "Archive" }}
+          options={{
+            title: "Archive",
+            drawerLabel: "Archive",
+            drawerIcon: ({ focused, size }) => (
+              <Entypo name="archive" size={20} color="black" />
+            ),
+          }}
         />
         <Drawer.Screen
           name="bin"
           href="/bin"
-          options={{ title: "Bin", drawerLabel: "Bin" }}
+          options={{
+            title: "Bin",
+            drawerLabel: "Bin",
+            drawerIcon: ({ focused, size }) => (
+              <Entypo name="trash" size={20} color="black" />
+            ),
+          }}
         />
       </Drawer>
     </>

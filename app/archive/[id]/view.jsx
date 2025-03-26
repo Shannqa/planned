@@ -6,6 +6,7 @@ import { SettingsContext } from "../../../helpers/settings_provider";
 import { lightColors, darkColors, setStyle } from "../../../helpers/themes";
 import ContextMenu from "../../../helpers/context_menu";
 import { useNavigation } from "@react-navigation/native";
+import Entypo from "@expo/vector-icons/Entypo";
 
 export default function ViewNote() {
   const params = useLocalSearchParams();
@@ -42,7 +43,7 @@ export default function ViewNote() {
           title: `Note id ${params.id}`,
           headerRight: () => (
             <Pressable onPressIn={() => openMenu()} style={styles.menuButton}>
-              <Text>...</Text>
+              <Entypo name="dots-three-vertical" size={22} color="black" />
             </Pressable>
           ),
         }}
@@ -86,9 +87,9 @@ const styles = StyleSheet.create({
     flexGrow: 1,
   },
   menuButton: {
-    backgroundColor: "green",
-    paddingHorizontal: 14,
-    paddingVertical: 20,
+    // backgroundColor: "green",
+    // paddingHorizontal: 14,
+    // paddingVertical: 20,
   },
 });
 

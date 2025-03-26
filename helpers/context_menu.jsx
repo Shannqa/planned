@@ -2,10 +2,8 @@ import React, { useContext, useEffect, useState } from "react";
 import { Text, View, StyleSheet, Button, Pressable } from "react-native";
 import { lightColors, darkColors, setStyle } from "./themes";
 import { SettingsContext } from "./settings_provider";
-import { binNote, archiveNote } from "./sql_notes";
 import { useSQLiteContext } from "expo-sqlite";
 import { NotesContext } from "./notes_provider";
-
 
 export default function ContextMenu({ menuOpen, noteId }) {
   const { notes, setNotes, changeNoteStatus } = useContext(NotesContext);
@@ -13,8 +11,6 @@ export default function ContextMenu({ menuOpen, noteId }) {
   let colors = currentTheme == "dark" ? dark : light;
   const db = useSQLiteContext();
 
-  // need to update context after moving note to the bin/archive
-  // might also change bin: 1, archive: 1 in db to state: bin/archive/open
   return (
     <View
       style={[
@@ -86,9 +82,6 @@ const light = StyleSheet.create({
     backgroundColor: lightColors.primary,
     boxShadow: "2 2 2 lightgrey, -1 2 2 lightgrey,",
   },
-  // menuItem: {
-  //   boxShadow: "-6 6 2 2 rgba(0, 0, 0, 0.8)",
-  // },
   text: {
     color: lightColors.font,
   },
@@ -109,11 +102,6 @@ const dark = StyleSheet.create({
   menu: {
     backgroundColor: lightColors.secondary,
     boxShadow: "2 2 2 rgba(0, 0, 0, 0.8)",
-  },
-  title: {
-    backgroundColor: darkColors.primary,
-    boxShadow: "2 2 2 rgba(0, 0, 0, 0.8)",
-    color: darkColors.font,
   },
   body: {
     backgroundColor: darkColors.primary,
