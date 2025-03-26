@@ -8,9 +8,10 @@ import {
   editNote,
   deleteNote,
   getNotesFromBin,
-  binNote,
+  dbChangeStatus,
   archiveNotes,
   setArchiveNotes,
+  dropTable
 } from "./sql_notes";
 
 export const NotesContext = createContext({
@@ -21,6 +22,7 @@ export const NotesContext = createContext({
   setBinNotes: () => {},
   archiveNotes: [],
   setArchiveNotes: () => {},
+  changeNoteStatus: () => {}
 });
 
 export default function NotesProvider({ children }) {
@@ -56,6 +58,34 @@ export default function NotesProvider({ children }) {
     // }
     // console.log(DbBinNotes);
   };
+  
+  // change note's status - "open", "bin" or "archive"
+  export async function changeNoteStatus(db, id,newStatus) {
+    const action = await changeNoteStatus(db, id, newStatus);
+    if (action) {
+      // update context
+      setNotes(notes.map((note) => {
+      if (note.id == id) {
+        return note.status = newStatus
+      } else {
+        return note;
+      }
+    }));
+  } else {
+    console.log("failed to update status");
+  }
+}
+  
+function dropTable(db) {
+  dbDropTable(db);
+  createTable(db);
+  getNotes(db);
+}
+
+  
+  
+  
+  
 
   // async function binit() {
   //   const binnn = await binNote(db, 1);
@@ -73,6 +103,7 @@ export default function NotesProvider({ children }) {
         setBinNotes,
         archiveNotes,
         setArchiveNotes,
+        changeNoteStatus
       }}
     >
       {children}

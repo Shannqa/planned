@@ -2,13 +2,13 @@
 export const createTable = async (db) => {
   // console.log("creating table...");
   try {
+    // available statuses: open, bin, archive
     await db.execAsync(`CREATE TABLE IF NOT EXISTS notes (
         id INTEGER PRIMARY KEY NOT null,
         title TEXT,
         body TEXT,
         category TEXT,
-        archive INTEGER DEFAULT FALSE,
-        bin INTEGER DEFAULT FALSE,
+        status TEXT DEFAULT "open",
         createdTimestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         lastEditTimestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP)`);
 
@@ -109,14 +109,14 @@ export const editNote = async (db, id, title, body) => {
 };
 
 // move one note to bin
-export const binNote = async (db, id) => {
+export const dbChangeStatus = async (db, id, newStatus) => {
   try {
     const update = await db.runAsync(
-      "UPDATE notes SET bin = ? WHERE id = ?;",
-      1,
+      "UPDATE notes SET status = ? WHERE id = ?;",
+      newStatus,
       id
     );
-    console.log(update);
+    // console.log(update);
     return true;
   } catch (error) {
     console.log(error);
@@ -124,7 +124,7 @@ export const binNote = async (db, id) => {
   }
 };
 
-// move one note to bin
+// move one note to archive
 export const archiveNote = async (db, id) => {
   try {
     const update = await db.runAsync(
@@ -140,7 +140,7 @@ export const archiveNote = async (db, id) => {
   }
 };
 
-// delete one note
+// permanently delete a note
 export const deleteNote = async (db, id, title, body) => {
   try {
     const del = await db.runAsync("DELETE FROM notes WHERE id = ?", id);

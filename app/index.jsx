@@ -14,6 +14,9 @@ export default function Home() {
       <Link style={setStyle("link", styles, colors)} href="/notes/">
         All notes
       </Link>
+      
+      <Text>Dev</Text>
+      <Button title ="Drop table" onPress={dropTable}
     </View>
   );
 }

@@ -4,8 +4,11 @@ import { lightColors, darkColors, setStyle } from "./themes";
 import { SettingsContext } from "./settings_provider";
 import { binNote, archiveNote } from "./sql_notes";
 import { useSQLiteContext } from "expo-sqlite";
+import { NotesContext } from "./notes_provider";
+
 
 export default function ContextMenu({ menuOpen, noteId }) {
+  const { notes, setNotes, changeNoteStatus } = useContext(NotesContext);
   const { currentTheme, setCurrentTheme } = useContext(SettingsContext);
   let colors = currentTheme == "dark" ? dark : light;
   const db = useSQLiteContext();
@@ -24,7 +27,7 @@ export default function ContextMenu({ menuOpen, noteId }) {
           pressed ? colors.menuPressed : colors.menuUnpressed,
           styles.menuItem,
         ]}
-        onPress={() => binNote(db, noteId)}
+        onPress={() => changeNoteStatus(db, noteId, "bin")}
       >
         <Text style={styles.menuText}>Delete</Text>
       </Pressable>
@@ -33,7 +36,7 @@ export default function ContextMenu({ menuOpen, noteId }) {
           pressed ? colors.menuPressed : colors.menuUnpressed,
           styles.menuItem,
         ]}
-        onPress={() => archiveNote(db, noteId)}
+        onPress={() => changeNoteStatus(db, noteId, "archive")}
       >
         <Text style={styles.menuText}>Archive</Text>
       </Pressable>
