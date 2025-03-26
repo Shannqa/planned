@@ -20,7 +20,7 @@ export default function Archive() {
   let colors = currentTheme == "dark" ? dark : light;
 
   useEffect(() => {
-    const archived = archiveNotes.filter((note) => note.archive == 1);
+    const archived = notes.filter((note) => note.status == "archive");
     setArchiveNotes(archived);
   }, [notes]);
 

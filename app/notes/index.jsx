@@ -14,16 +14,20 @@ import { lightColors, darkColors, setStyle } from "../../helpers/themes";
 import { SettingsContext } from "../../helpers/settings_provider";
 
 export default function AllNotes() {
-  const { notes, setNotes } = useContext(NotesContext);
+  const { notes, setNotes, openNotes, setOpenNotes } = useContext(NotesContext);
   const { currentTheme, setCurrentTheme } = useContext(SettingsContext);
   let colors = currentTheme == "dark" ? dark : light;
   console.log(notes);
-  // console.log(colors);
+
+  useEffect(() => {
+    const open = notes.filter((note) => note.status == "open");
+    setOpenNotes(open);
+  }, [notes]);
 
   return (
     <View style={setStyle("container", styles, colors)}>
       <FlatList
-        data={notes}
+        data={openNotes}
         keyExtractor={(item) => item.id.toString()}
         numColumns={2}
         columnWrapperStyle={styles.row}

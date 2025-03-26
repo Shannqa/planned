@@ -19,7 +19,7 @@ export default function Bin() {
   let colors = currentTheme == "dark" ? dark : light;
 
   useEffect(() => {
-    const bin = notes.filter((note) => note.bin == 1);
+    const bin = notes.filter((note) => note.status == "bin");
     setBinNotes(bin);
   }, [notes]);
 

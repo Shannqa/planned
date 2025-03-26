@@ -11,22 +11,26 @@ import {
   dbChangeStatus,
   archiveNotes,
   setArchiveNotes,
-  dropTable
+  dbDropTable,
 } from "./sql_notes";
 
 export const NotesContext = createContext({
   notes: [],
   setNotes: () => {},
   getNotes: () => {},
+  openNotes: [],
+  setOpenNotes: () => {},
   binNotes: [],
   setBinNotes: () => {},
   archiveNotes: [],
   setArchiveNotes: () => {},
-  changeNoteStatus: () => {}
+  changeNoteStatus: () => {},
+  dropTable: () => {},
 });
 
 export default function NotesProvider({ children }) {
   const [notes, setNotes] = useState([]);
+  const [openNotes, setOpenNotes] = useState([]);
   const [binNotes, setBinNotes] = useState([]);
   const [archiveNotes, setArchiveNotes] = useState([]);
   const db = useSQLiteContext();
@@ -58,34 +62,31 @@ export default function NotesProvider({ children }) {
     // }
     // console.log(DbBinNotes);
   };
-  
+
   // change note's status - "open", "bin" or "archive"
-  export async function changeNoteStatus(db, id,newStatus) {
-    const action = await changeNoteStatus(db, id, newStatus);
+  async function changeNoteStatus(db, id, newStatus) {
+    const action = await dbChangeStatus(db, id, newStatus);
     if (action) {
       // update context
-      setNotes(notes.map((note) => {
-      if (note.id == id) {
-        return note.status = newStatus
-      } else {
-        return note;
-      }
-    }));
-  } else {
-    console.log("failed to update status");
+      setNotes(
+        notes.map((note) => {
+          if (note.id == id) {
+            return (note.status = newStatus);
+          } else {
+            return note;
+          }
+        })
+      );
+    } else {
+      console.log("failed to update status");
+    }
   }
-}
-  
-function dropTable(db) {
-  dbDropTable(db);
-  createTable(db);
-  getNotes(db);
-}
 
-  
-  
-  
-  
+  function dropTable() {
+    dbDropTable(db);
+    createTable(db);
+    getNotes(db);
+  }
 
   // async function binit() {
   //   const binnn = await binNote(db, 1);
@@ -103,7 +104,10 @@ function dropTable(db) {
         setBinNotes,
         archiveNotes,
         setArchiveNotes,
-        changeNoteStatus
+        changeNoteStatus,
+        dropTable,
+        openNotes,
+        setOpenNotes,
       }}
     >
       {children}

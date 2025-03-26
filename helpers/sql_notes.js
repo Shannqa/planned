@@ -151,3 +151,14 @@ export const deleteNote = async (db, id, title, body) => {
     return false;
   }
 };
+
+// drop a table
+export const dbDropTable = async (db) => {
+  try {
+    const drop = await db.execAsync("DROP TABLE notes");
+    return true;
+  } catch (error) {
+    console.log(error);
+    return false;
+  }
+};
