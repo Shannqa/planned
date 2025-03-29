@@ -87,6 +87,16 @@ export default function NotesProvider({ children }) {
     createTable(db);
     getNotes(db);
   }
+  
+  function deleteNotePerm() {}
+  
+  
+  function multiChangeNoteStatus() {
+    
+  }
+
+  function multiDeleteNotePerm() {}
+  
 
   // async function binit() {
   //   const binnn = await binNote(db, 1);
