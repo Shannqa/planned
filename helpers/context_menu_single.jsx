@@ -1,87 +1,94 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Text, View, StyleSheet, Button, Pressable } from "react-native";
+import {
+  Text,
+  View,
+  StyleSheet,
+  Button,
+  Pressable,
+  FlatList,
+  Item,
+} from "react-native";
 import { lightColors, darkColors, setStyle } from "./themes";
 import { SettingsContext } from "./settings_provider";
 import { useSQLiteContext } from "expo-sqlite";
 import { NotesContext } from "./notes_provider";
+import { useRouter } from "expo-router";
 
-export default function ContextMenu({ menuOpen, noteId, screen }) {
-  const { notes, setNotes, changeNoteStatus } = useContext(NotesContext);
+export default function ContextMenuSingle({ menuOpen, noteId, screen }) {
+  const { notes, setNotes, changeNoteStatus, deleteNotePerm } =
+    useContext(NotesContext);
   const { currentTheme, setCurrentTheme } = useContext(SettingsContext);
   let colors = currentTheme == "dark" ? dark : light;
   const db = useSQLiteContext();
-  const [menuData, setMenuData] = useState([])
+  const [menuData, setMenuData] = useState([]);
+  const router = useRouter();
 
-  if (screen == "openNote") {
-    setMenuData(...openNoteMenu);
-  } else if (screen == "archiveNote") {
-    setMenuData(...archiveNoteMenu);
-  } else if (screen == "binNote") {
-    setMenuData(...openBinMenu);
+  useEffect(() => {
+    if (screen == "openNote") {
+      setMenuData(openNoteMenu);
+    } else if (screen == "archiveNote") {
+      setMenuData(archiveNoteMenu);
+    } else if (screen == "binNote") {
+      setMenuData(binNoteMenu);
+    }
+  }, [screen]);
 
-  }
   const openNoteMenu = [
     {
+      id: "0",
       label: "Archive note",
-      action: changeNoteStatus(db, noteId, "archive"),
+      action: function () {
+        changeNoteStatus(db, noteId, "archive");
+        router.back();
+      },
     },
     {
+      id: "1",
       label: "Delete note",
-      onPress: changeNoteStatus(db, noteId, "bin"),
-    }
+      action: function () {
+        changeNoteStatus(db, noteId, "bin");
+        router.back();
+      },
+    },
   ];
-  
-  const archivedNoteMenu = [
+
+  const archiveNoteMenu = [
     {
+      id: "0",
       label: "Remove from archive",
-      onPress: changeNoteStatus(db, noteId, "open")
+      action: function () {
+        changeNoteStatus(db, noteId, "open");
+        router.back();
+      },
     },
     {
-     label: "Delete note",
-     onPress: changeNoteStatus(db, noteId, "bin")
-    }
+      id: "1",
+      label: "Delete note",
+      action: function () {
+        changeNoteStatus(db, noteId, "bin");
+        router.back();
+      },
+    },
   ];
-  
+
   const binNoteMenu = [
     {
+      id: "0",
       label: "Restore note",
-      onPress: changeNoteStatus(db, noteId, "open")
+      action: function () {
+        changeNoteStatus(db, noteId, "open");
+        router.back();
+      },
     },
     {
+      id: "1",
       label: "Remove permanently",
-      onPress: deleteNotePerm(db, noteId)
-    }
+      action: function () {
+        deleteNotePerm(db, noteId);
+        router.back();
+      },
+    },
   ];
-    
-
-  <FlatList
-        data={menuData}
-        keyExtractor={(item) => item.id.toString()}
-        numColumns={2}
-        columnWrapperStyle={styles.row}
-        renderItem={({ item }) => (
-          <View style={setStyle("singleNote", styles, colors)}>
-            <Link
-              style={setStyle("box", styles, colors)}
-              href={`notes/${item.id}/view`}
-              asChild
-            >
-              <Pressable>
-                <View>
-                  <Text style={setStyle("title", styles, colors)}>
-                    {item.title}
-                  </Text>
-                  <Text style={setStyle("text", styles, colors)}>
-                    {item.body}
-                  </Text>
-                </View>
-              </Pressable>
-            </Link>
-          </View>
-        )}
-      />
-   
-
 
   return (
     <View
@@ -90,24 +97,21 @@ export default function ContextMenu({ menuOpen, noteId, screen }) {
         { display: menuOpen ? "true" : "none" },
       ]}
     >
-      <Pressable
-        style={({ pressed }) => [
-          pressed ? colors.menuPressed : colors.menuUnpressed,
-          styles.menuItem,
-        ]}
-        onPress={() => changeNoteStatus(db, noteId, "bin")}
-      >
-        <Text style={styles.menuText}>Delete</Text>
-      </Pressable>
-      <Pressable
-        style={({ pressed }) => [
-          pressed ? colors.menuPressed : colors.menuUnpressed,
-          styles.menuItem,
-        ]}
-        onPress={() => changeNoteStatus(db, noteId, "archive")}
-      >
-        <Text style={styles.menuText}>Archive</Text>
-      </Pressable>
+      <FlatList
+        data={menuData}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => (
+          <Pressable
+            style={({ pressed }) => [
+              pressed ? colors.menuPressed : colors.menuUnpressed,
+              styles.menuItem,
+            ]}
+            onPress={() => item.action()}
+          >
+            <Text style={styles.menuText}>{item.label}</Text>
+          </Pressable>
+        )}
+      />
     </View>
   );
 }

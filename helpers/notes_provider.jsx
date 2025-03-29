@@ -26,6 +26,9 @@ export const NotesContext = createContext({
   setArchiveNotes: () => {},
   changeNoteStatus: () => {},
   dropTable: () => {},
+  deleteNotePerm: () => {},
+  multiChangeNoteStatus: () => {},
+  multiDeleteNotePerm: () => {},
 });
 
 export default function NotesProvider({ children }) {
@@ -87,16 +90,12 @@ export default function NotesProvider({ children }) {
     createTable(db);
     getNotes(db);
   }
-  
+
   function deleteNotePerm() {}
-  
-  
-  function multiChangeNoteStatus() {
-    
-  }
+
+  function multiChangeNoteStatus() {}
 
   function multiDeleteNotePerm() {}
-  
 
   // async function binit() {
   //   const binnn = await binNote(db, 1);
@@ -118,6 +117,9 @@ export default function NotesProvider({ children }) {
         dropTable,
         openNotes,
         setOpenNotes,
+        deleteNotePerm,
+        multiChangeNoteStatus,
+        multiDeleteNotePerm,
       }}
     >
       {children}

@@ -4,7 +4,7 @@ import { useLocalSearchParams, Stack, Link, router } from "expo-router";
 import { NotesContext } from "../../../helpers/notes_provider";
 import { SettingsContext } from "../../../helpers/settings_provider";
 import { lightColors, darkColors, setStyle } from "../../../helpers/themes";
-import ContextMenu from "../../../helpers/context_menu";
+import ContextMenuSingle from "../../../helpers/context_menu_single";
 import { useNavigation } from "@react-navigation/native";
 import Entypo from "@expo/vector-icons/Entypo";
 
@@ -48,7 +48,11 @@ export default function ViewNote() {
           ),
         }}
       />
-      <ContextMenu menuOpen={menuOpen} noteId={note.id} />
+      <ContextMenuSingle
+        menuOpen={menuOpen}
+        noteId={note.id}
+        screen={"binNote"}
+      />
       <View style={styles.note}>
         <Text style={setStyle("title", styles, colors)}>{note.title}</Text>
         <Text style={setStyle("body", styles, colors)}>{note.body}</Text>

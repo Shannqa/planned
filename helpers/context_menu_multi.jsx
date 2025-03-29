@@ -5,68 +5,72 @@ import { SettingsContext } from "./settings_provider";
 import { useSQLiteContext } from "expo-sqlite";
 import { NotesContext } from "./notes_provider";
 
-export default function ContextMenu({ menuOpen, noteId, screen }) {
+export default function ContextMenuMulti({ menuOpen, noteId, screen }) {
   const { notes, setNotes, changeNoteStatus } = useContext(NotesContext);
   const { currentTheme, setCurrentTheme } = useContext(SettingsContext);
   let colors = currentTheme == "dark" ? dark : light;
   const db = useSQLiteContext();
 
-let options;
+  let options;
 
-
-if (screen == "singleNote") {
-  options = {
-    label: "Archive",
-    action: changeNoteStatus(db, noteId, "bin"),
+  if (screen == "singleNote") {
+    options = {
+      label: "Archive",
+      action: changeNoteStatus(db, noteId, "bin"),
+    };
+  } else if (screen == "openNotes") {
+    options = {
+      label: "Delete",
+      onPress: changeNoteStatus(db, noteId, "bin"),
+    };
+  } else if (screen == "archiveNotes") {
+    options = {
+      label: "Remove from archive",
+      onPress: changeNoteStatus(db, noteId, "open"),
+    };
+  } else if (screen == "binNotes") {
+    options = [
+      {
+        label: "Restore",
+        onPress: changeNoteStatus(db, noteId, "open"),
+      },
+      {
+        label: "Remove permanently",
+        onPress: deleteNotePerm(db, noteId),
+      },
+    ];
+  } else if (screen == "openIndex") {
+    (options = {
+      label: "Delete notes",
+      onPress: multiChangeNoteStatus(db, [noteIds], "delete"),
+    }),
+      {
+        label: "Archive notes",
+        onPress: multiChangeNoteStatus(db, [noteIds], "archive"),
+      };
+  } else if (screen == "archiveIndex") {
+    options = [
+      {
+        label: "Move back to open notes",
+        onPress: multiChangeNoteStatus(db, [noteIds], "open"),
+      },
+      {
+        label: "Delete notes",
+        onPress: multiChangeNoteStatus(db, [noteIds], "bin"),
+      },
+    ];
+  } else if (screen == "binIndex") {
+    options = [
+      {
+        label: "Restore notes",
+        onPress: multiChangeNoteStatus(db, [noteIds], "open"),
+      },
+      {
+        label: "Permanently delete notes",
+        onPress: multiDeleteNotesPerm(db, [noteIds]),
+      },
+    ];
   }
-}  else if (screen == "openNotes") {
-  options = {
-    label: "Delete",
-    onPress: changeNoteStatus(db, noteId, "bin"),
-  }
-} else if (screen == "archiveNotes") {
-  options = {
-    label: "Remove from archive",
-    onPress: changeNoteStatus(db, noteId, "open")
-  }
-} else if (screen == "binNotes") {
-  options = [{
-    label: "Restore",
-    onPress: changeNoteStatus(db, noteId, "open")
-  },
-  {
-    label: "Remove permanently",
-    onPress: deleteNotePerm(db, noteId)
-  }]
-} else if (screen == "openIndex") {
-  options = {
-    label: "Delete notes",
-    onPress: multiChangeNoteStatus(db, [noteIds], "delete"),
-  },
-  {
-    label: "Archive notes",
-    onPress: multiChangeNoteStatus(db, [noteIds], "archive"),
-    }
-  }
-  else if (screen == "archiveIndex") {
-  options = [{
-    label: "Move back to open notes",
-   onPress: multiChangeNoteStatus(db, [noteIds], "open")
-  },
-  {
-  label: "Delete notes",
-  onPress: multiChangeNoteStatus(db, [noteIds], "bin")
-  }]
-} else if (screen == "binIndex") {
-  options = [{
-    label: "Restore notes",
-    onPress: multiChangeNoteStatus(db, [noteIds], "open")
-  },
-  {
-    label: "Permanently delete notes",
-    onPress: multiDeleteNotesPerm(db, [noteIds])
-  }]
-}
 
   return (
     <View
