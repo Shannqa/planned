@@ -12,6 +12,7 @@ import {
   archiveNotes,
   setArchiveNotes,
   dbDropTable,
+  dbDeleteNote,
 } from "./sql_notes";
 
 export const NotesContext = createContext({
@@ -68,18 +69,21 @@ export default function NotesProvider({ children }) {
 
   // change note's status - "open", "bin" or "archive"
   async function changeNoteStatus(db, id, newStatus) {
+    // console.log("id ", id, "newstatus ", newStatus);
     const action = await dbChangeStatus(db, id, newStatus);
+    // console.log(action);
     if (action) {
       // update context
-      setNotes(
-        notes.map((note) => {
-          if (note.id == id) {
-            return (note.status = newStatus);
-          } else {
-            return note;
-          }
-        })
-      );
+      const updatedData = notes.map((note) => {
+        if (note.id == id) {
+          return { ...note, status: newStatus };
+        } else {
+          return note;
+        }
+      });
+      setNotes(updatedData);
+      // console.log("updated data:", updatedData);
+      // console.log("notes:", notes);
     } else {
       console.log("failed to update status");
     }
@@ -91,7 +95,16 @@ export default function NotesProvider({ children }) {
     getNotes(db);
   }
 
-  function deleteNotePerm() {}
+  async function deleteNotePerm(db, id) {
+    const action = await dbDeleteNote(db, id);
+    if (action) {
+      // update context
+      const updatedData = notes.filter((note) => note.id != id);
+      setNotes(updatedData);
+    } else {
+      console.log("failed to delete note");
+    }
+  }
 
   function multiChangeNoteStatus() {}
 

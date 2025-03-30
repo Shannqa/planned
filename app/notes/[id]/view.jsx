@@ -1,20 +1,9 @@
 import React, { useContext, useEffect, useState } from "react";
-import {
-  Text,
-  View,
-  StyleSheet,
-  Button,
-  Pressable,
-  Image,
-  TouchableNativeFeedback,
-} from "react-native";
+import { Text, View, StyleSheet, Button } from "react-native";
 import { useLocalSearchParams, Stack, Link, router } from "expo-router";
 import { NotesContext } from "../../../helpers/notes_provider";
 import { SettingsContext } from "../../../helpers/settings_provider";
 import { lightColors, darkColors, setStyle } from "../../../helpers/themes";
-import ContextMenuSingle from "../../../helpers/context_menu_single";
-import { useNavigation } from "@react-navigation/native";
-import Entypo from "@expo/vector-icons/Entypo";
 import PopupMenu from "../../../helpers/popup_component";
 
 export default function ViewNote() {
@@ -23,12 +12,6 @@ export default function ViewNote() {
   let colors = currentTheme == "dark" ? dark : light;
   const { notes, setNotes } = useContext(NotesContext);
   const [note, setNote] = useState({ id: "", title: "", body: "" });
-  const [menuOpen, setMenuOpen] = useState(false);
-
-  function openMenu() {
-    console.log("aa", menuOpen);
-    setMenuOpen(!menuOpen);
-  }
 
   useEffect(() => {
     if (notes && params.id) {
@@ -51,29 +34,10 @@ export default function ViewNote() {
         options={{
           title: `Note id ${params.id}`,
           headerRight: () => (
-            <PopupMenu
-              menuOpen={menuOpen}
-              noteId={note.id}
-              screen={"openNote"}
-            />
+            <PopupMenu noteId={params.id} screen={"openNote"} />
           ),
-          // headerRight: () => (
-          //   <TouchableNativeFeedback onPress={() => console.log("aaa")}>
-          //     <Entypo name="dots-three-vertical" size={22} color="black" />
-          //   </TouchableNativeFeedback>
-          // ),
-          //   // <Pressable onPressIn={() => openMenu()} style={styles.menuButton}>
-          //   //   <Entypo name="dots-three-vertical" size={22} color="black" />
-          //   // </Pressable>
         }}
       />
-      {/* <ContextMenuSingle
-        menuOpen={menuOpen}
-        noteId={note.id}
-        screen={"openNote"}
-      /> */}
-
-      {/* <PopupMenu /> */}
       <View style={styles.note}>
         <Text style={setStyle("title", styles, colors)}>{note.title}</Text>
         <Text style={setStyle("body", styles, colors)}>{note.body}</Text>

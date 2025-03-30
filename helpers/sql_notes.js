@@ -141,7 +141,7 @@ export const archiveNote = async (db, id) => {
 };
 
 // permanently delete a note
-export const deleteNote = async (db, id, title, body) => {
+export const dbDeleteNote = async (db, id) => {
   try {
     const del = await db.runAsync("DELETE FROM notes WHERE id = ?", id);
     // console.log(del);

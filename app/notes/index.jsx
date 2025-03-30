@@ -17,10 +17,11 @@ export default function AllNotes() {
   const { notes, setNotes, openNotes, setOpenNotes } = useContext(NotesContext);
   const { currentTheme, setCurrentTheme } = useContext(SettingsContext);
   let colors = currentTheme == "dark" ? dark : light;
-  console.log(notes);
+  // console.log(notes);
 
   useEffect(() => {
     const open = notes.filter((note) => note.status == "open");
+    // console.log("open", open);
     setOpenNotes(open);
   }, [notes]);
 

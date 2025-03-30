@@ -4,9 +4,7 @@ import { useLocalSearchParams, Stack, Link, router } from "expo-router";
 import { NotesContext } from "../../../helpers/notes_provider";
 import { SettingsContext } from "../../../helpers/settings_provider";
 import { lightColors, darkColors, setStyle } from "../../../helpers/themes";
-import ContextMenuSingle from "../../../helpers/context_menu_single";
-import { useNavigation } from "@react-navigation/native";
-import Entypo from "@expo/vector-icons/Entypo";
+import PopupMenu from "../../../helpers/popup_component";
 
 export default function ViewNote() {
   const params = useLocalSearchParams();
@@ -14,12 +12,6 @@ export default function ViewNote() {
   let colors = currentTheme == "dark" ? dark : light;
   const { notes, setNotes } = useContext(NotesContext);
   const [note, setNote] = useState({ id: "", title: "", body: "" });
-  const [menuOpen, setMenuOpen] = useState(false);
-
-  function openMenu() {
-    console.log("aa", menuOpen);
-    setMenuOpen(!menuOpen);
-  }
 
   useEffect(() => {
     if (notes && params.id) {
@@ -42,16 +34,9 @@ export default function ViewNote() {
         options={{
           title: `Note id ${params.id}`,
           headerRight: () => (
-            <Pressable onPressIn={() => openMenu()} style={styles.menuButton}>
-              <Entypo name="dots-three-vertical" size={22} color="black" />
-            </Pressable>
+            <PopupMenu noteId={params.id} screen={"binNote"} />
           ),
         }}
-      />
-      <ContextMenuSingle
-        menuOpen={menuOpen}
-        noteId={note.id}
-        screen={"binNote"}
       />
       <View style={styles.note}>
         <Text style={setStyle("title", styles, colors)}>{note.title}</Text>

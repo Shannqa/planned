@@ -1,21 +1,10 @@
 import React, { useContext, useEffect, useState, Component } from "react";
-import {
-  Text,
-  View,
-  StyleSheet,
-  Button,
-  Pressable,
-  Image,
-  TouchableOpacity,
-  FlatList,
-} from "react-native";
+import { Text, View, StyleSheet, FlatList } from "react-native";
 import {
   Menu,
   MenuOptions,
   MenuOption,
   MenuTrigger,
-  withMenuContext,
-  renderers,
 } from "react-native-popup-menu";
 import Entypo from "@expo/vector-icons/Entypo";
 import { lightColors, darkColors, setStyle } from "./themes";
@@ -34,7 +23,7 @@ const CustomMenu = (props) => {
   );
 };
 
-export default function PopupMenu({ menuOpen, noteId, screen }) {
+export default function PopupMenu({ noteId, screen }) {
   /* Workaround for a current bug - onPress doesn't work in react navigation header menu. Need to trigger menu to open on onPressIn instead */
   const [state, setState] = useState({ opened: false });
   const { notes, setNotes, changeNoteStatus, deleteNotePerm } =
@@ -49,6 +38,7 @@ export default function PopupMenu({ menuOpen, noteId, screen }) {
     if (screen == "openNote") {
       setMenuData(openNoteMenu);
     } else if (screen == "archiveNote") {
+      console.log("menu", archiveNoteMenu);
       setMenuData(archiveNoteMenu);
     } else if (screen == "binNote") {
       setMenuData(binNoteMenu);
@@ -60,7 +50,8 @@ export default function PopupMenu({ menuOpen, noteId, screen }) {
       id: "0",
       label: "Archive note",
       action: function () {
-        changeNoteStatus(db, noteId, "archive");
+        const change = changeNoteStatus(db, noteId, "archive");
+        console.log("id in popup ", noteId);
         router.back();
       },
     },
@@ -79,7 +70,8 @@ export default function PopupMenu({ menuOpen, noteId, screen }) {
       id: "0",
       label: "Remove from archive",
       action: function () {
-        changeNoteStatus(db, noteId, "open");
+        const change = changeNoteStatus(db, noteId, "open");
+        console.log(change);
         router.back();
       },
     },
@@ -121,13 +113,7 @@ export default function PopupMenu({ menuOpen, noteId, screen }) {
   function onBackdropPress() {
     setState({ opened: false });
   }
-  function selector() {
-    console.log("select");
-  }
 
-  // const { opened } = this.state;
-  // const [menuData, setMenuData] = useState([]);
-  // console.log(bob);
   return (
     <Menu
       renderer={CustomMenu}

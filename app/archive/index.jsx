@@ -21,6 +21,8 @@ export default function Archive() {
 
   useEffect(() => {
     const archived = notes.filter((note) => note.status == "archive");
+    // console.log("archived", archived);
+    // console.log("notes", notes);
     setArchiveNotes(archived);
   }, [notes]);
 
