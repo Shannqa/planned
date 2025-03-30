@@ -12,17 +12,20 @@ import SettingsProvider, {
 } from "../helpers/settings_provider";
 import { StatusBar } from "expo-status-bar";
 import Entypo from "@expo/vector-icons/Entypo";
+import { MenuProvider } from "react-native-popup-menu";
 
 export default function RootLayout() {
   return (
     <GestureHandlerRootView>
-      <SQLiteProvider databaseName="notes.db">
-        <SettingsProvider>
-          <NotesProvider>
-            <DrawerCustom />
-          </NotesProvider>
-        </SettingsProvider>
-      </SQLiteProvider>
+      <MenuProvider>
+        <SQLiteProvider databaseName="notes.db">
+          <SettingsProvider>
+            <NotesProvider>
+              <DrawerCustom />
+            </NotesProvider>
+          </SettingsProvider>
+        </SQLiteProvider>
+      </MenuProvider>
     </GestureHandlerRootView>
   );
 }
