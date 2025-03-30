@@ -27,6 +27,7 @@ export const lightColors = {
   primary: "#FFFFFF", // bg, front, lighter
   secondary: "#F2F2F2", // bg, back, darker
   detail: "lightblue",
+  detail2: "rgb(252, 252, 210)",
   font: "#000000",
 };
 
@@ -34,5 +35,6 @@ export const darkColors = {
   primary: "#1E1E1E", // bg, front, lighter
   secondary: "#121212", // bg, back, darker
   detail: "green",
+  detail2: "rgb(26, 33, 31)",
   font: "#E0E0E0",
 };

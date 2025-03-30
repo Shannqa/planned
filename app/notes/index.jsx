@@ -1,5 +1,5 @@
-import React, { useContext, useEffect } from "react";
-import { Link } from "expo-router";
+import React, { useState, useContext, useEffect } from "react";
+import { Link, useRouter } from "expo-router";
 import {
   View,
   Text,
@@ -18,6 +18,9 @@ export default function AllNotes() {
   const { currentTheme, setCurrentTheme } = useContext(SettingsContext);
   let colors = currentTheme == "dark" ? dark : light;
   // console.log(notes);
+  const [selecting, setSelecting] = useState(false);
+  const [selectedNotes, setSelectedNotes] = useState([]);
+  const router = useRouter();
 
   useEffect(() => {
     const open = notes.filter((note) => note.status == "open");
@@ -25,6 +28,16 @@ export default function AllNotes() {
     setOpenNotes(open);
   }, [notes]);
 
+  function toggleSelection(id) {
+    console.log("selection", selectedNotes);
+    if (selectedNotes.includes(id)) {
+      const newList = selectedNotes.filter((note_id) => note_id != id);
+      setSelectedNotes(newList);
+    } else {
+      const newList = [...selectedNotes, id];
+      setSelectedNotes(newList);
+    }
+  }
   return (
     <View style={setStyle("container", styles, colors)}>
       <FlatList
@@ -32,14 +45,34 @@ export default function AllNotes() {
         keyExtractor={(item) => item.id.toString()}
         numColumns={2}
         columnWrapperStyle={styles.row}
-        renderItem={({ item }) => (
-          <View style={setStyle("singleNote", styles, colors)}>
-            <Link
-              style={setStyle("box", styles, colors)}
-              href={`notes/${item.id}/view`}
-              asChild
+        renderItem={({ item }) => {
+          const isSelected = selectedNotes.includes(item.id);
+          return (
+            <View
+              style={
+                isSelected
+                  ? [styles.singleNote, colors.selected]
+                  : [styles.singleNote, colors.notSelected]
+                // isSelected
+                //   ? setStyle(["singleNote", "selected"], styles, colors)
+                //   : setStyle(["singleNote", "notSelected"], styles, colors)
+              }
             >
-              <Pressable>
+              {/* <Link
+                style={setStyle("box", styles, colors)}
+                href={`notes/${item.id}/view`}
+                asChild
+              > */}
+              <Pressable
+                // onPress={() => router.push(`notes/${item.id}/view`)}
+                onPress={
+                  selecting
+                    ? () => toggleSelection(item.id)
+                    : () => router.push(`notes/${item.id}/view`)
+                }
+                onLongPress={() => toggleSelection(item.id)}
+                style={styles.box}
+              >
                 <View>
                   <Text style={setStyle("title", styles, colors)}>
                     {item.title}
@@ -49,9 +82,10 @@ export default function AllNotes() {
                   </Text>
                 </View>
               </Pressable>
-            </Link>
-          </View>
-        )}
+              {/* </Link> */}
+            </View>
+          );
+        }}
       />
       <View style={setStyle("buttonContainer", styles, colors)}>
         <View style={setStyle("addButton", styles, colors)}>
@@ -116,6 +150,9 @@ const styles = StyleSheet.create({
   addButtonText: {
     fontSize: 48,
   },
+  selected: {
+    // backgroundColor: "yellow",
+  },
 });
 
 const light = StyleSheet.create({
@@ -123,8 +160,8 @@ const light = StyleSheet.create({
     backgroundColor: lightColors.secondary,
   },
   singleNote: {
-    backgroundColor: lightColors.primary,
-    boxShadow: "2 2 2 lightgrey",
+    // backgroundColor: lightColors.primary,
+    // boxShadow: "2 2 2 lightgrey",
   },
   title: {
     color: lightColors.font,
@@ -139,6 +176,14 @@ const light = StyleSheet.create({
   addButtonText: {
     color: lightColors.font,
   },
+  selected: {
+    backgroundColor: lightColors.detail2,
+    boxShadow: "2 2 2 lightgrey",
+  },
+  notSelected: {
+    backgroundColor: lightColors.primary,
+    boxShadow: "2 2 2 lightgrey",
+  },
 });
 
 const dark = StyleSheet.create({
@@ -146,8 +191,8 @@ const dark = StyleSheet.create({
     backgroundColor: darkColors.secondary,
   },
   singleNote: {
-    backgroundColor: darkColors.primary,
-    boxShadow: "2 2 2 rgba(0, 0, 0, 0.8)",
+    // backgroundColor: darkColors.primary,
+    // boxShadow: "2 2 2 rgba(0, 0, 0, 0.8)",
   },
   title: {
     color: darkColors.font,
@@ -161,5 +206,13 @@ const dark = StyleSheet.create({
   },
   addButtonText: {
     color: darkColors.font,
+  },
+  selected: {
+    backgroundColor: darkColors.detail2,
+    boxShadow: "2 2 2 rgba(0, 0, 0, 0.8)",
+  },
+  notSelected: {
+    backgroundColor: darkColors.primary,
+    boxShadow: "2 2 2 rgba(0, 0, 0, 0.8)",
   },
 });
