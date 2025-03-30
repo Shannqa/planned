@@ -7,6 +7,7 @@ import {
   Pressable,
   Image,
   TouchableOpacity,
+  FlatList,
 } from "react-native";
 import {
   Menu,
@@ -48,8 +49,10 @@ export default class PopupMenu extends Component {
     console.log("select");
   }
 
-  render() {
+  render({ bob }) {
     const { opened } = this.state;
+    const [menuData, setMenuData] = useState([]);
+    console.log(bob);
     return (
       <Menu
         renderer={CustomMenu}
@@ -68,7 +71,23 @@ export default class PopupMenu extends Component {
           <Entypo name="dots-three-vertical" size={22} color="black" />
         </MenuTrigger>
         <MenuOptions>
-          <MenuOption onSelect={() => selector()} text="option" />
+          <FlatList
+            data={menuData}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => (
+              // <Pressable
+              <MenuOption onSelect={() => item.action()} text={item.label} />
+              //   style={({ pressed }) => [
+              //     pressed ? colors.menuPressed : colors.menuUnpressed,
+              //     styles.menuItem,
+              //   ]}
+              //   onPress={() => item.action()}
+              // >
+              //   <Text style={styles.menuText}>{item.label}</Text>
+              // </Pressable>
+            )}
+          />
+          {/* <MenuOption onSelect={() => selector()} text="option" /> */}
         </MenuOptions>
         {/* <TouchableOpacity onPressIn={() => this.openMenu()}>
             <Text>Open please</Text>
