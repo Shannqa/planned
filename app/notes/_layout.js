@@ -14,6 +14,7 @@ export default function Layout() {
           backgroundColor: colors.primary,
         },
         headerTintColor: colors.font,
+        headerRight: null,
       }}
     >
       <Stack.Screen name="index" options={{ headerShown: false }} />

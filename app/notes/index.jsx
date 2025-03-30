@@ -7,7 +7,6 @@ import {
   StyleSheet,
   Button,
   Pressable,
-  useColorScheme,
 } from "react-native";
 import { NotesContext } from "../../helpers/notes_provider";
 import { lightColors, darkColors, setStyle } from "../../helpers/themes";

@@ -10,9 +10,11 @@ import SettingsProvider, {
   SettingsContext,
   useSettings,
 } from "../helpers/settings_provider";
+import { useSegments } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import Entypo from "@expo/vector-icons/Entypo";
 import { MenuProvider } from "react-native-popup-menu";
+import PopupMenuMulti from "../helpers/popup_multi";
 
 export default function RootLayout() {
   return (
@@ -33,6 +35,10 @@ export default function RootLayout() {
 function DrawerCustom() {
   const { currentTheme, setCurrentTheme } = useContext(SettingsContext);
   let colors = currentTheme == "dark" ? dark : light;
+  // make sure drawer button appears only on notes/ screen, not any nested screens. segments should be ["notes"]
+  const segments = useSegments();
+  const showDrawerMenuButton = segments.length === 1;
+
   return (
     <>
       <StatusBar
@@ -75,6 +81,10 @@ function DrawerCustom() {
             drawerIcon: ({ focused, size }) => (
               <Entypo name="list" size={20} color="black" />
             ),
+            headerRight: showDrawerMenuButton
+              ? () => <PopupMenuMulti screen={"openIndex"} />
+              : null,
+            // headerRight: () => <Entypo name="list" size={20} color="black" />,
           }}
         />
         <Drawer.Screen
