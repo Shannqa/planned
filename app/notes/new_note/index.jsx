@@ -14,11 +14,11 @@ export default function NewNote() {
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const db = useSQLiteContext();
-
-  async function addNewNote() {
-    await addNote(db, title, body);
-    getNotes(db);
-    // router.back();
+  
+  function addNewNote() {
+    addNote(db, title, body);
+    setTitle("");
+    setBody("");
     router.push("/notes");
   }
 

@@ -4,7 +4,7 @@ import { lightColors, darkColors, setStyle } from "./themes";
 import { SettingsContext } from "./settings_provider";
 import { useSQLiteContext } from "expo-sqlite";
 import { NotesContext } from "./notes_provider";
-
+ 
 export default function ContextMenuMulti({ menuOpen, noteId, screen }) {
   const { notes, setNotes, changeNoteStatus } = useContext(NotesContext);
   const { currentTheme, setCurrentTheme } = useContext(SettingsContext);

@@ -24,7 +24,7 @@ const CustomMenu = (props) => {
 };
 
 export default function PopupMenuMulti({ screen }) {
-  /* Workaround for a current bug - onPress doesn't work in react navigation header menu. Need to trigger menu to open on onPressIn instead */
+  /* Workaround for a current bug - onPress doesn't work in react navigation header menu. Need to trigger menu to open on onPressIn instead */ 
   const [state, setState] = useState({ opened: false });
   const { notes, setNotes, changeNoteStatus, deleteNotePerm } =
     useContext(NotesContext);
@@ -49,73 +49,70 @@ export default function PopupMenuMulti({ screen }) {
   const openIndexMenu = [
     {
       id: "0",
-      label: "Archive note",
+      label: "Select notes...",
       action: function () {
-        // const change = changeNoteStatus(db, noteId, "archive");
-        console.log("index");
-        // router.back();
+        const change = changeNoteStatus(db, noteId, "archive");
+        console.log("id in popup ", noteId);
+      },
+    },
+    {
+      id: "1",
+      label: "Cancel selection",
+      action: function () {
+        const change = changeNoteStatus(db, noteId, "archive");
+        console.log("id in popup ", noteId);
+      },
+    },
+    {
+      id: "2",
+      label: "Archive notes",
+      action: function () {
+        changeNoteStatus(db, noteId, "bin");
+      },
+    },
+    {
+      id: "3",
+      label: "Delete notes",
+      action: function () {
+        changeNoteStatus(db, noteId, "bin");
       },
     },
   ];
 
-  // const openNoteMenu = [
-  //   {
-  //     id: "0",
-  //     label: "Archive note",
-  //     action: function () {
-  //       const change = changeNoteStatus(db, noteId, "archive");
-  //       console.log("id in popup ", noteId);
-  //       router.back();
-  //     },
-  //   },
-  //   {
-  //     id: "1",
-  //     label: "Delete note",
-  //     action: function () {
-  //       changeNoteStatus(db, noteId, "bin");
-  //       router.back();
-  //     },
-  //   },
-  // ];
+  const archiveNoteMenu = [
+    {
+      id: "0",
+      label: "Remove from archive",
+      action: function () {
+        const change = changeNoteStatus(db, noteId, "open");
+        console.log(change);
+      },
+    },
+    {
+      id: "1",
+      label: "Delete note",
+      action: function () {
+        changeNoteStatus(db, noteId, "bin");
+      },
+    },
+  ];
 
-  // const archiveNoteMenu = [
-  //   {
-  //     id: "0",
-  //     label: "Remove from archive",
-  //     action: function () {
-  //       const change = changeNoteStatus(db, noteId, "open");
-  //       console.log(change);
-  //       router.back();
-  //     },
-  //   },
-  //   {
-  //     id: "1",
-  //     label: "Delete note",
-  //     action: function () {
-  //       changeNoteStatus(db, noteId, "bin");
-  //       router.back();
-  //     },
-  //   },
-  // ];
-
-  // const binNoteMenu = [
-  //   {
-  //     id: "0",
-  //     label: "Restore note",
-  //     action: function () {
-  //       changeNoteStatus(db, noteId, "open");
-  //       router.back();
-  //     },
-  //   },
-  //   {
-  //     id: "1",
-  //     label: "Remove permanently",
-  //     action: function () {
-  //       deleteNotePerm(db, noteId);
-  //       router.back();
-  //     },
-  //   },
-  // ];
+  const binNoteMenu = [
+    {
+      id: "0",
+      label: "Restore note",
+      action: function () {
+        changeNoteStatus(db, noteId, "open");
+      },
+    },
+    {
+      id: "1",
+      label: "Remove permanently",
+      action: function () {
+        deleteNotePerm(db, noteId);
+      },
+    },
+  ];
 
   function onOptionSelect(value) {
     setState({ opened: false });

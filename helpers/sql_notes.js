@@ -1,9 +1,8 @@
-// create notes table
-export const createTable = async (db) => {
-  // console.log("creating table...");
+// create notes table and view
+export const dbPrepTables = async (db) => {
   try {
-    // available statuses: open, bin, archive
-    await db.execAsync(`CREATE TABLE IF NOT EXISTS notes (
+    await db.withExclusiveTransactionAsync(async (tx) => {
+      await tx.execAsync(`CREATE TABLE IF NOT EXISTS notes (
         id INTEGER PRIMARY KEY NOT null,
         title TEXT,
         body TEXT,
@@ -11,9 +10,9 @@ export const createTable = async (db) => {
         status TEXT DEFAULT "open",
         createdTimestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         lastEditTimestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP)`);
-
-    await db.execAsync(
-      `CREATE VIEW IF NOT EXISTS notesbin AS SELECT
+       
+    /*
+      await tx.execAsync(`CREATE VIEW IF NOT EXISTS notesbin AS SELECT
         id,
         title,
         body,
@@ -21,52 +20,38 @@ export const createTable = async (db) => {
         archive,
         bin,
         createdTimestamp,
-        lastEditTimestamp FROM notes WHERE bin = 1`
-    );
+        lastEditTimestamp FROM notes WHERE bin = 1`);
+      */
+    });
   } catch (error) {
     console.log(error);
-  }
-};
-
-// get all notes from database
-export const getNotesFromDb = async (db) => {
-  try {
-    const dbNotes = await db.getAllAsync("SELECT * FROM notes");
-    if (dbNotes.length > 0) {
-      return dbNotes;
-    } else {
-      return null;
-    }
-  } catch (error) {
-    console.log(error);
-    return null;
-  }
-};
-
-// get all notes from database
-export const getNotesFromBin = async (db) => {
-  try {
-    const dbNotes = await db.getAllAsync("SELECT * FROM notesbin");
-    if (dbNotes.length > 0) {
-      return dbNotes;
-    } else {
-      return null;
-    }
-  } catch (error) {
-    console.log(error);
-    return null;
   }
 };
 
 // get one note
-export const getNoteFromDb = async (db, id) => {
+export const dbGetNote = async (db, id) => {
   try {
-    const dbNote = await db.getFirstAsync(
+    const result = await db.getFirstAsync(
       "SELECT * FROM settings WHERE id = ?",
       id
     );
-    if (dbNote) {
-      return dbNote;
+    if (result) {
+      return result;
+    } else {
+      return null;
+    }
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
+};
+
+// get all notes from database
+export const dbGetNoteMulti = async (db) => {
+  try {
+    const result = await db.getAllAsync("SELECT * FROM notes");
+    if (result.length > 0) {
+      return result;
     } else {
       return null;
     }
@@ -77,13 +62,12 @@ export const getNoteFromDb = async (db, id) => {
 };
 
 // add one note
-export const addNote = async (db, title, body) => {
+export const dbAddNote = async (db, title, body) => {
   try {
     const add = await db.runAsync(
       "INSERT INTO notes (title, body) VALUES (?, ?);",
       title,
-      body
-    );
+      body);
     return true;
   } catch (error) {
     console.log(error);
@@ -91,16 +75,16 @@ export const addNote = async (db, title, body) => {
   }
 };
 
-// edit one note
-export const editNote = async (db, id, title, body) => {
+// edit content of one note
+export const dbEditNote = async (db, id, title, body) => {
   try {
-    const update = await db.runAsync(
+    const result = await db.runAsync(
       "UPDATE notes SET title = ?, body = ? WHERE id = ?;",
       title,
       body,
       id
     );
-    // console.log(update);
+    // console.log(result);
     return true;
   } catch (error) {
     console.log(error);
@@ -108,15 +92,15 @@ export const editNote = async (db, id, title, body) => {
   }
 };
 
-// move one note to bin
+// change status of a note: "open", "archive", "bin"
 export const dbChangeStatus = async (db, id, newStatus) => {
   try {
-    const update = await db.runAsync(
+    const result = await db.runAsync(
       "UPDATE notes SET status = ? WHERE id = ?;",
       newStatus,
       id
     );
-    // console.log(update);
+    // console.log(result);
     return true;
   } catch (error) {
     console.log(error);
@@ -124,38 +108,54 @@ export const dbChangeStatus = async (db, id, newStatus) => {
   }
 };
 
-// move one note to archive
-export const archiveNote = async (db, id) => {
+// change status of all notes in an array: "open", "archive", "bin"
+export const dbChangeStatusMulti = async (db, ids, newStatus) => {
   try {
-    const update = await db.runAsync(
-      "UPDATE notes SET archive = ? WHERE id = ?;",
-      1,
-      id
-    );
-    console.log(update);
+    await db.withExclusiveTransactionAsync(async (tx) => {
+      for (const id of ids) {
+        await tx.execAsync("UPDATE notes SET status = ? WHERE id = ?;", newStatus, id);
+      }
+    });
+    console.log(result);
     return true;
   } catch (error) {
     console.log(error);
     return false;
   }
-};
+}
 
 // permanently delete a note
-export const dbDeleteNote = async (db, id) => {
+export const dbDeleteNotePerm = async (db, id) => {
   try {
-    const del = await db.runAsync("DELETE FROM notes WHERE id = ?", id);
-    // console.log(del);
+    const result = await db.runAsync("DELETE FROM notes WHERE id = ?", id);
+    // console.log(result);
     return true;
   } catch (error) {
     console.log(error);
     return false;
   }
 };
+
+// permanently delete multiple notes notes
+export const dbDeleteNotePermMulti = async (db, ids) => {
+  try {
+    await db.withExclusiveTransactionAsync(async (tx) => {
+      for (const id of ids) {
+        await tx.execAsync("DELETE FROM notes WHERE id = ?", id);
+      }
+    });
+    return true;
+  } catch (error) {
+    console.log(error);
+    return false;
+  }
+}
 
 // drop a table
 export const dbDropTable = async (db) => {
   try {
-    const drop = await db.execAsync("DROP TABLE notes");
+    const result = await db.execAsync("DROP TABLE notes");
+    // console.log(result);
     return true;
   } catch (error) {
     console.log(error);

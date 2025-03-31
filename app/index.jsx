@@ -4,10 +4,13 @@ import { View, StyleSheet, Text, Button } from "react-native";
 import { SettingsContext } from "../helpers/settings_provider";
 import { lightColors, darkColors, setStyle } from "../helpers/themes";
 import { NotesContext } from "../helpers/notes_provider";
+import { useSQLiteContext } from "expo-sqlite";
 
 export default function Home() {
   const { currentTheme, setCurrentTheme } = useContext(SettingsContext);
   const { dropTable } = useContext(NotesContext);
+  const db = useSQLiteContext();
+
   let colors = currentTheme == "dark" ? dark : light;
   // console.log("colors", colors, "currentTheme", currentTheme);
 
@@ -19,7 +22,7 @@ export default function Home() {
       </Link>
 
       <Text>Dev</Text>
-      <Button title="Drop table" onPress={() => dropTable()} />
+      <Button title="Drop table" onPress={() => dropTable(db)} />
     </View>
   );
 }
