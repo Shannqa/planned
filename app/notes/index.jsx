@@ -1,5 +1,5 @@
-import React, { useState, useContext, useEffect } from "react";
-import { Link, useRouter } from "expo-router";
+import React, { useState, useContext, useEffect, useLayoutEffect } from "react";
+import { Link, useRouter, Drawer, Stack, Screen } from "expo-router";
 import {
   View,
   Text,
@@ -11,8 +11,12 @@ import {
 import { NotesContext } from "../../helpers/notes_provider";
 import { lightColors, darkColors, setStyle } from "../../helpers/themes";
 import { SettingsContext } from "../../helpers/settings_provider";
+import Entypo from "@expo/vector-icons/Entypo";
+import PopupMenuMulti from "../../helpers/popup_multi";
+import { useSegments } from "expo-router";
+import { useNavigation } from "@react-navigation/native";
 
-export default function AllNotes() {
+export default function AllNotes({ ...props }) {
   const { notes, setNotes, openNotes, setOpenNotes } = useContext(NotesContext);
   const { currentTheme, setCurrentTheme } = useContext(SettingsContext);
   let colors = currentTheme == "dark" ? dark : light;
@@ -20,12 +24,38 @@ export default function AllNotes() {
   const [selecting, setSelecting] = useState(false);
   const [selectedNotes, setSelectedNotes] = useState([]);
   const router = useRouter();
-
+  const navigation = useNavigation();
+  // make sure drawer button appears only on notes/ screen, not any nested screens. segments should be ["notes"]
+  const segments = useSegments();
+  const showDrawerMenuButton = segments.length === 1;
+  // console.log(props);
   useEffect(() => {
     const open = notes.filter((note) => note.status == "open");
     // console.log("open", open);
     setOpenNotes(open);
   }, [notes]);
+
+  useLayoutEffect(() => {
+    const parent = navigation.getParent();
+    // console.log(parent);
+    parent.setOptions({
+      // headerTitle: "bzz",
+      // title: "bzz",
+      // drawerLabel: "bb",
+      headerRight: () => (
+        <PopupMenuMulti
+          screen={"openIndex"}
+          selecting={selecting}
+          setSelecting={setSelecting}
+          selectedNotes={selectedNotes}
+          setSelectedNotes={setSelectedNotes}
+        />
+      ),
+      // headerRight: showDrawerMenuButton
+      // ? () => <PopupMenuMulti screen={"openIndex"} />
+      // : null,
+    });
+  }, [navigation]);
 
   function toggleSelection(id) {
     console.log("selection", selectedNotes);

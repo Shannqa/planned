@@ -23,8 +23,14 @@ const CustomMenu = (props) => {
   );
 };
 
-export default function PopupMenuMulti({ screen }) {
-  /* Workaround for a current bug - onPress doesn't work in react navigation header menu. Need to trigger menu to open on onPressIn instead */ 
+export default function PopupMenuMulti({
+  screen,
+  selecting,
+  setSelecting,
+  selectedNotes,
+  setSelectedNotes,
+}) {
+  /* Workaround for a current bug - onPress doesn't work in react navigation header menu. Need to trigger menu to open on onPressIn instead */
   const [state, setState] = useState({ opened: false });
   const { notes, setNotes, changeNoteStatus, deleteNotePerm } =
     useContext(NotesContext);
@@ -50,24 +56,26 @@ export default function PopupMenuMulti({ screen }) {
     {
       id: "0",
       label: "Select notes...",
-      action: function () {
-        const change = changeNoteStatus(db, noteId, "archive");
-        console.log("id in popup ", noteId);
+      action: function (e) {
+        console.log(e);
+        setSelecting(true);
+        setState({ opened: false });
       },
     },
     {
       id: "1",
       label: "Cancel selection",
       action: function () {
-        const change = changeNoteStatus(db, noteId, "archive");
-        console.log("id in popup ", noteId);
+        setSelectedNotes([]);
+        setSelecting(false);
+        setState({ opened: false });
       },
     },
     {
       id: "2",
       label: "Archive notes",
       action: function () {
-        changeNoteStatus(db, noteId, "bin");
+        const change = changeNoteStatus(db, noteId, "archive");
       },
     },
     {
@@ -147,7 +155,8 @@ export default function PopupMenuMulti({ screen }) {
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
             <MenuOption
-              onSelect={() => item.action()}
+              onSelect={(e) => item.action(e)}
+              r4
               text={item.label}
               style={styles.menuText}
             />

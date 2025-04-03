@@ -15,6 +15,7 @@ import { StatusBar } from "expo-status-bar";
 import Entypo from "@expo/vector-icons/Entypo";
 import { MenuProvider } from "react-native-popup-menu";
 import PopupMenuMulti from "../helpers/popup_multi";
+import AllNotes from "./notes";
 
 export default function RootLayout() {
   return (
@@ -81,10 +82,9 @@ function DrawerCustom() {
             drawerIcon: ({ focused, size }) => (
               <Entypo name="list" size={20} color="black" />
             ),
-            headerRight: showDrawerMenuButton
-              ? () => <PopupMenuMulti screen={"openIndex"} />
-              : null,
-            // headerRight: () => <Entypo name="list" size={20} color="black" />,
+            // headerRight: showDrawerMenuButton
+            //   ? () => <PopupMenuMulti screen={"openIndex"} />
+            //   : null,
           }}
         />
         <Drawer.Screen

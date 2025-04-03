@@ -10,24 +10,27 @@ import {
   dbChangeStatusMulti,
   dbDeleteNotePerm,
   dbDeleteNotePermMulti,
-  dbDropTable
+  dbDropTable,
 } from "./sql_notes";
 
 export const NotesContext = createContext({
   notes: [],
   setNotes: () => {},
-  getNotes: () => {},
   openNotes: [],
   setOpenNotes: () => {},
   binNotes: [],
   setBinNotes: () => {},
   archiveNotes: [],
   setArchiveNotes: () => {},
-  changeNoteStatus: () => {},
-  dropTable: () => {},
+  getNoteMulti: () => {},
+  addNote: () => {},
+  editNote: () => {},
+  changeStatus: () => {},
+  changeStatusMulti: () => {},
   deleteNotePerm: () => {},
-  multiChangeNoteStatus: () => {},
+  deleteNotePermMulti: () => {},
   multiDeleteNotePerm: () => {},
+  dropTable: () => {},
 });
 
 export default function NotesProvider({ children }) {
@@ -54,18 +57,18 @@ export default function NotesProvider({ children }) {
       setNotes(result);
     }
   }
-  
+
   // add note to db, then fetch notes
   async function addNote(db, title, body) {
     const result = await dbAddNote(db, title, body);
     if (result) {
       await getNoteMulti(db);
-    } 
+    }
   }
 
   async function editNote(db, id, title, body) {
     const result = await dbEditNote(db, id, title, body);
-    
+
     if (result) {
       // update context
       const updatedNotes = notes.map((note) => {
@@ -80,7 +83,7 @@ export default function NotesProvider({ children }) {
       console.log("failed to edit note");
     }
   }
-  
+
   // change note's status - "open", "bin" or "archive"
   async function changeStatus(db, id, newStatus) {
     const result = await dbChangeStatus(db, id, newStatus);
@@ -100,7 +103,7 @@ export default function NotesProvider({ children }) {
     }
   }
 
-async function changeStatusMulti(db, ids, newStatus) {
+  async function changeStatusMulti(db, ids, newStatus) {
     const result = await dbChangeStatusMulti(db, ids, newStatus);
 
     if (result) {
@@ -118,9 +121,6 @@ async function changeStatusMulti(db, ids, newStatus) {
       console.log("failed to update status");
     }
   }
-
-
-    
 
   async function deleteNotePerm(db, id) {
     const result = await dbDeleteNotePerm(db, id);
@@ -161,7 +161,6 @@ async function changeStatusMulti(db, ids, newStatus) {
         setBinNotes,
         archiveNotes,
         setArchiveNotes,
-        getNote,
         getNoteMulti,
         addNote,
         editNote,
@@ -169,7 +168,7 @@ async function changeStatusMulti(db, ids, newStatus) {
         changeStatusMulti,
         deleteNotePerm,
         deleteNotePermMulti,
-        dropTable
+        dropTable,
       }}
     >
       {children}
