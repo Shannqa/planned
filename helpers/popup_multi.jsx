@@ -23,113 +23,38 @@ const CustomMenu = (props) => {
   );
 };
 
-export default function PopupMenuMulti({
-  screen,
-  selecting,
-  setSelecting,
-  selectedNotes,
-  setSelectedNotes,
-}) {
+export default function PopupMenuMulti(startSelecting, stopSelecting) {
   /* Workaround for a current bug - onPress doesn't work in react navigation header menu. Need to trigger menu to open on onPressIn instead */
-  const [state, setState] = useState({ opened: false });
-  const { notes, setNotes, changeNoteStatus, deleteNotePerm } =
-    useContext(NotesContext);
+  const [popupOpen, setPopupOpen] = useState(false);
   const { currentTheme, setCurrentTheme } = useContext(SettingsContext);
   let colors = currentTheme == "dark" ? dark : light;
-  const db = useSQLiteContext();
-  const [menuData, setMenuData] = useState([]);
-  const router = useRouter();
-
-  useEffect(() => {
-    if (screen == "openIndex") {
-      setMenuData(openIndexMenu);
-    }
-    // } else if (screen == "archiveNote") {
-    //   console.log("menu", archiveNoteMenu);
-    //   setMenuData(archiveNoteMenu);
-    // } else if (screen == "binNote") {
-    //   setMenuData(binNoteMenu);
-    // }
-  }, [screen]);
-
-  const openIndexMenu = [
+  
+  const menuData = [
     {
-      id: "0",
-      label: "Select notes...",
-      action: function (e) {
-        console.log(e);
-        setSelecting(true);
-        setState({ opened: false });
+      id: 0,
+      label: "Select notes",
+      action: function () {
+        startSelecting();
+        onOptionSelect();
       },
-    },
-    {
-      id: "1",
+      id: 1,
       label: "Cancel selection",
       action: function () {
-        setSelectedNotes([]);
-        setSelecting(false);
-        setState({ opened: false });
-      },
-    },
-    {
-      id: "2",
-      label: "Archive notes",
-      action: function () {
-        const change = changeNoteStatus(db, noteId, "archive");
-      },
-    },
-    {
-      id: "3",
-      label: "Delete notes",
-      action: function () {
-        changeNoteStatus(db, noteId, "bin");
-      },
-    },
-  ];
+        stopSelecting();
+        onOptionSelect();
+      }
+    }
+  ]
 
-  const archiveNoteMenu = [
-    {
-      id: "0",
-      label: "Remove from archive",
-      action: function () {
-        const change = changeNoteStatus(db, noteId, "open");
-        console.log(change);
-      },
-    },
-    {
-      id: "1",
-      label: "Delete note",
-      action: function () {
-        changeNoteStatus(db, noteId, "bin");
-      },
-    },
-  ];
-
-  const binNoteMenu = [
-    {
-      id: "0",
-      label: "Restore note",
-      action: function () {
-        changeNoteStatus(db, noteId, "open");
-      },
-    },
-    {
-      id: "1",
-      label: "Remove permanently",
-      action: function () {
-        deleteNotePerm(db, noteId);
-      },
-    },
-  ];
 
   function onOptionSelect(value) {
-    setState({ opened: false });
+    setPopupOpen(false);
   }
   function onTriggerPress() {
-    setState({ opened: true });
+    setPopupOpen(true);
   }
   function onBackdropPress() {
-    setState({ opened: false });
+    setPopupOpen(false);
   }
 
   return (
@@ -137,7 +62,7 @@ export default function PopupMenuMulti({
       renderer={CustomMenu}
       opened={state.opened}
       onBackdropPress={() => onBackdropPress()}
-      onSelect={(value) => onOptionSelect(value)}
+      onSelect={(value) => onOptionSelect()}
     >
       <MenuTrigger
         style={styles.trigger}
@@ -149,14 +74,12 @@ export default function PopupMenuMulti({
         <Entypo name="dots-three-vertical" size={22} color="black" />
       </MenuTrigger>
       <MenuOptions style={light.menu}>
-        {/* <MenuOption onSelect={() => selector()} text={"label"} /> */}
         <FlatList
-          data={openIndexMenu}
+          data={menuData}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
             <MenuOption
-              onSelect={(e) => item.action(e)}
-              r4
+              onSelect={() => item.action()}
               text={item.label}
               style={styles.menuText}
             />
@@ -248,3 +171,88 @@ const dark = StyleSheet.create({
     backgroundColor: darkColors.secondary,
   },
 });
+
+/*
+  useEffect(() => {
+    if (screen == "openIndex") {
+      setMenuData(openIndexMenu);
+    }
+    } else if (screen == "archiveNote") {
+    //   console.log("menu", archiveNoteMenu);
+    //   setMenuData(archiveNoteMenu);
+    // } else if (screen == "binNote") {
+    //   setMenuData(binNoteMenu);
+    // }
+  }, [screen]);
+*/
+/*
+  const openIndexMenu = [
+    {
+      id: "0",
+      label: "Select notes...",
+      action: function (e) {
+        console.log(e);
+        setSelecting(true);
+        setState({ opened: false });
+      },
+    },
+    {
+      id: "1",
+      label: "Cancel selection",
+      action: function () {
+        setSelectedNotes([]);
+        setSelecting(false);
+        setState({ opened: false });
+      },
+    },
+    {
+      id: "2",
+      label: "Archive notes",
+      action: function () {
+        const change = changeNoteStatus(db, noteId, "archive");
+      },
+    },
+    {
+      id: "3",
+      label: "Delete notes",
+      action: function () {
+        changeNoteStatus(db, noteId, "bin");
+      },
+    },
+  ];
+
+  const archiveNoteMenu = [
+    {
+      id: "0",
+      label: "Remove from archive",
+      action: function () {
+        const change = changeNoteStatus(db, noteId, "open");
+        console.log(change);
+      },
+    },
+    {
+      id: "1",
+      label: "Delete note",
+      action: function () {
+        changeNoteStatus(db, noteId, "bin");
+      },
+    },
+  ];
+
+  const binNoteMenu = [
+    {
+      id: "0",
+      label: "Restore note",
+      action: function () {
+        changeNoteStatus(db, noteId, "open");
+      },
+    },
+    {
+      id: "1",
+      label: "Remove permanently",
+      action: function () {
+        deleteNotePerm(db, noteId);
+      },
+    },
+  ];
+*/

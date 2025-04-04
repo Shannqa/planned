@@ -57,7 +57,22 @@ export default function AllNotes({ ...props }) {
     });
   }, [navigation]);
 
+
+  function startSelecting() {
+    setSelecting(true)
+    // show slide in menu
+  }
+  
+  function stopSelecting() {
+    setSelecting(false);
+    setSelectedNotes([]);
+    // hide slide in menu
+    
+  }
+  
+  
   function toggleSelection(id) {
+    // add or remove note from selection
     console.log("selection", selectedNotes);
     if (selectedNotes.includes(id)) {
       const newList = selectedNotes.filter((note_id) => note_id != id);
