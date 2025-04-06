@@ -9,9 +9,6 @@ import {
 import Entypo from "@expo/vector-icons/Entypo";
 import { lightColors, darkColors, setStyle } from "./themes";
 import { SettingsContext } from "./settings_provider";
-import { useSQLiteContext } from "expo-sqlite";
-import { NotesContext } from "./notes_provider";
-import { useRouter } from "expo-router";
 
 const CustomMenu = (props) => {
   const { style, children, layouts, ...other } = props;
@@ -23,12 +20,19 @@ const CustomMenu = (props) => {
   );
 };
 
-export default function PopupMenuMulti(startSelecting, stopSelecting) {
+export default function PopupMenuMulti({
+  screen,
+  startSelecting,
+  stopSelecting,
+  selecting,
+  setSelecting,
+}) {
   /* Workaround for a current bug - onPress doesn't work in react navigation header menu. Need to trigger menu to open on onPressIn instead */
   const [popupOpen, setPopupOpen] = useState(false);
   const { currentTheme, setCurrentTheme } = useContext(SettingsContext);
   let colors = currentTheme == "dark" ? dark : light;
-  
+  const [menuSelecting, setMenuSelecting] = useState(false);
+
   const menuData = [
     {
       id: 0,
@@ -36,16 +40,19 @@ export default function PopupMenuMulti(startSelecting, stopSelecting) {
       action: function () {
         startSelecting();
         onOptionSelect();
+        setMenuSelecting(true);
       },
+    },
+    {
       id: 1,
       label: "Cancel selection",
       action: function () {
         stopSelecting();
         onOptionSelect();
-      }
-    }
-  ]
-
+        setMenuSelecting(false);
+      },
+    },
+  ];
 
   function onOptionSelect(value) {
     setPopupOpen(false);
@@ -59,10 +66,10 @@ export default function PopupMenuMulti(startSelecting, stopSelecting) {
 
   return (
     <Menu
-      renderer={CustomMenu}
-      opened={state.opened}
+      // renderer={CustomMenu}
+      opened={popupOpen}
       onBackdropPress={() => onBackdropPress()}
-      onSelect={(value) => onOptionSelect()}
+      // onSelect={(value) => onOptionSelect()}
     >
       <MenuTrigger
         style={styles.trigger}
@@ -73,17 +80,30 @@ export default function PopupMenuMulti(startSelecting, stopSelecting) {
       >
         <Entypo name="dots-three-vertical" size={22} color="black" />
       </MenuTrigger>
+
       <MenuOptions style={light.menu}>
         <FlatList
           data={menuData}
           keyExtractor={(item) => item.id}
-          renderItem={({ item }) => (
-            <MenuOption
-              onSelect={() => item.action()}
-              text={item.label}
-              style={styles.menuText}
-            />
-          )}
+          renderItem={({ item }) => {
+            if (item.id == 0 && !menuSelecting) {
+              return (
+                <MenuOption
+                  onSelect={() => item.action()}
+                  text={item.label}
+                  style={styles.menuText}
+                />
+              );
+            } else if (item.id == 1 && menuSelecting) {
+              return (
+                <MenuOption
+                  onSelect={() => item.action()}
+                  text={item.label}
+                  style={styles.menuText}
+                />
+              );
+            }
+          }}
         />
       </MenuOptions>
     </Menu>
@@ -125,6 +145,12 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     flexGrow: 1,
   },
+  text1: {
+    backgroundColor: "green",
+  },
+  text2: {
+    backgroundColor: "red",
+  },
 });
 
 const light = StyleSheet.create({
@@ -138,7 +164,6 @@ const light = StyleSheet.create({
   text: {
     color: lightColors.font,
   },
-
   menuPressed: {
     backgroundColor: lightColors.detail,
   },

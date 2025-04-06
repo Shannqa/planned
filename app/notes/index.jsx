@@ -15,6 +15,7 @@ import Entypo from "@expo/vector-icons/Entypo";
 import PopupMenuMulti from "../../helpers/popup_multi";
 import { useSegments } from "expo-router";
 import { useNavigation } from "@react-navigation/native";
+import SlideSelect from "../../helpers/slide_select_menu";
 
 export default function AllNotes({ ...props }) {
   const { notes, setNotes, openNotes, setOpenNotes } = useContext(NotesContext);
@@ -46,9 +47,9 @@ export default function AllNotes({ ...props }) {
         <PopupMenuMulti
           screen={"openIndex"}
           selecting={selecting}
+          startSelecting={startSelecting}
+          stopSelecting={stopSelecting}
           setSelecting={setSelecting}
-          selectedNotes={selectedNotes}
-          setSelectedNotes={setSelectedNotes}
         />
       ),
       // headerRight: showDrawerMenuButton
@@ -57,20 +58,18 @@ export default function AllNotes({ ...props }) {
     });
   }, [navigation]);
 
-
   function startSelecting() {
-    setSelecting(true)
+    // console.log(selecting);
+    setSelecting(true);
     // show slide in menu
   }
-  
+
   function stopSelecting() {
     setSelecting(false);
     setSelectedNotes([]);
     // hide slide in menu
-    
   }
-  
-  
+
   function toggleSelection(id) {
     // add or remove note from selection
     console.log("selection", selectedNotes);
@@ -83,66 +82,81 @@ export default function AllNotes({ ...props }) {
     }
   }
   return (
-    <View style={setStyle("container", styles, colors)}>
-      <FlatList
-        data={openNotes}
-        keyExtractor={(item) => item.id.toString()}
-        numColumns={2}
-        columnWrapperStyle={styles.row}
-        renderItem={({ item }) => {
-          const isSelected = selectedNotes.includes(item.id);
-          return (
-            <View
-              style={
-                isSelected
-                  ? [styles.singleNote, colors.selected]
-                  : [styles.singleNote, colors.notSelected]
-                // isSelected
-                //   ? setStyle(["singleNote", "selected"], styles, colors)
-                //   : setStyle(["singleNote", "notSelected"], styles, colors)
-              }
-            >
-              {/* <Link
+    <>
+      <View style={setStyle("container", styles, colors)}>
+        <FlatList
+          data={openNotes}
+          keyExtractor={(item) => item.id.toString()}
+          numColumns={2}
+          columnWrapperStyle={styles.row}
+          renderItem={({ item }) => {
+            const isSelected = selectedNotes.includes(item.id);
+            return (
+              <View
+                style={
+                  isSelected
+                    ? [styles.singleNote, colors.selected]
+                    : [styles.singleNote, colors.notSelected]
+                  // isSelected
+                  //   ? setStyle(["singleNote", "selected"], styles, colors)
+                  //   : setStyle(["singleNote", "notSelected"], styles, colors)
+                }
+              >
+                {/* <Link
                 style={setStyle("box", styles, colors)}
                 href={`notes/${item.id}/view`}
                 asChild
               > */}
-              <Pressable
-                // onPress={() => router.push(`notes/${item.id}/view`)}
-                onPress={
-                  selecting
-                    ? () => toggleSelection(item.id)
-                    : () => router.push(`notes/${item.id}/view`)
-                }
-                onLongPress={() => toggleSelection(item.id)}
-                style={styles.box}
-              >
+                <Pressable
+                  // onPress={() => router.push(`notes/${item.id}/view`)}
+                  onPress={
+                    selecting
+                      ? () => toggleSelection(item.id)
+                      : () => router.push(`notes/${item.id}/view`)
+                  }
+                  onLongPress={() => toggleSelection(item.id)}
+                  style={styles.box}
+                >
+                  <View>
+                    <Text style={setStyle("title", styles, colors)}>
+                      {item.title}
+                    </Text>
+                    <Text style={setStyle("text", styles, colors)}>
+                      {item.body}
+                    </Text>
+                    <Text style={{ color: "red" }}>
+                      {selecting ? "true" : "false"}
+                    </Text>
+                  </View>
+                </Pressable>
+                {/* </Link> */}
+              </View>
+            );
+          }}
+        />
+        <View style={setStyle("buttonContainer", styles, colors)}>
+          <View style={setStyle("addButton", styles, colors)}>
+            <Link href="notes/new_note/" asChild>
+              <Pressable>
                 <View>
-                  <Text style={setStyle("title", styles, colors)}>
-                    {item.title}
-                  </Text>
-                  <Text style={setStyle("text", styles, colors)}>
-                    {item.body}
+                  <Text style={setStyle("addButtonText", styles, colors)}>
+                    +
                   </Text>
                 </View>
               </Pressable>
-              {/* </Link> */}
-            </View>
-          );
-        }}
-      />
-      <View style={setStyle("buttonContainer", styles, colors)}>
-        <View style={setStyle("addButton", styles, colors)}>
-          <Link href="notes/new_note/" asChild>
-            <Pressable>
-              <View>
-                <Text style={setStyle("addButtonText", styles, colors)}>+</Text>
-              </View>
-            </Pressable>
-          </Link>
+            </Link>
+          </View>
         </View>
       </View>
-    </View>
+      <SlideSelect
+        screen={"openIndex"}
+        selecting={selecting}
+        setSelecting={setSelecting}
+        selectedNotes={selectedNotes}
+        setSelectedNotes={selectedNotes}
+        stopSelecting={stopSelecting}
+      />
+    </>
   );
 }
 
@@ -184,7 +198,7 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     position: "absolute",
-    bottom: 10,
+    bottom: 32,
     right: 0,
     borderRadius: 50,
     flex: 1,

@@ -124,33 +124,50 @@ export default function SlideSelect({
   }
 
   return (
-    <View style={styles.slide}>
-      <Entypo name="cross" size={26} style={styles.icon} color="black" />
-      <Text style={styles.text}>{selectedNotes.length}</Text>
-    </View>
+    <>
+      <Menu
+        renderer={renderers.SlideInMenu}
+        opened={slideOpen}
+        // onBackdropPress={() => onBackdropPress()}
+      >
+        <MenuTrigger>
+          <Text>...</Text>
+        </MenuTrigger>
+        <MenuOptions style={styles.menuStyles}>
+          <MenuOption onPress={() => closeSelection()}>
+            <Entypo name="cross" size={22} color="black" />
+          </MenuOption>
+          <Text>{selectedNotes.length}</Text>
+          <MenuOption
+            onPress={() => {
+              () => setPopupOpen(!slideOpen);
+            }}
+          >
+            <Entypo name="dots-three-vertical" size={22} color="black" />
+          </MenuOption>
+        </MenuOptions>
+      </Menu>
+
+      {/* <Menu opened={popupOpen}>
+        <MenuOptions>
+          <FlatList
+            data={menuData}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => (
+              <MenuOption
+                onSelect={() => item.action()}
+                text={item.label}
+                style={styles.menuText}
+              />
+            )}
+          />
+        </MenuOptions>
+      </Menu> */}
+    </>
   );
 }
 
 const styles = StyleSheet.create({
-  slide: {
-    position: "absolute",
-    bottom: 0,
-    zIndex: 10,
-    display: "flex",
-    flexDirection: "row",
-    width: "100%",
-    flex: 1,
-    alignItems: "center",
-    padding: 6,
-    textAlignVertical: "center",
-    backgroundColor: "white",
-  },
-  text: {
-    fontSize: 18,
-  },
-  icon: {
-    paddingRight: 4,
-  },
   menuStyles: {
     display: "flex",
     flexDirection: "row",
