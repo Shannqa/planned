@@ -53,6 +53,7 @@ export default function NotesProvider({ children }) {
   // get notes from db, put them inside context
   async function getNoteMulti(db) {
     const result = await dbGetNoteMulti(db);
+    // console.log(result);
     if (result) {
       setNotes(result);
     }
@@ -105,7 +106,8 @@ export default function NotesProvider({ children }) {
 
   async function changeStatusMulti(db, ids, newStatus) {
     const result = await dbChangeStatusMulti(db, ids, newStatus);
-
+    console.log(ids, newStatus);
+    // console.log(result);
     if (result) {
       // update context
       const updatedNotes = notes.map((note) => {
@@ -116,6 +118,7 @@ export default function NotesProvider({ children }) {
           return note;
         }
       });
+      // console.log(updatedNotes);
       setNotes(updatedNotes);
     } else {
       console.log("failed to update status");

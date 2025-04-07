@@ -11,11 +11,8 @@ import {
 import { NotesContext } from "../../helpers/notes_provider";
 import { lightColors, darkColors, setStyle } from "../../helpers/themes";
 import { SettingsContext } from "../../helpers/settings_provider";
-import Entypo from "@expo/vector-icons/Entypo";
-import PopupMenuMulti from "../../helpers/popup_multi";
 import { useSegments } from "expo-router";
 import { useNavigation } from "@react-navigation/native";
-import SlideSelect from "../../helpers/slide_select_menu";
 import RightMenuMulti from "../../helpers/right_menu_multi";
 import LeftMenuMulti from "../../helpers/left_menu_multi";
 
@@ -31,6 +28,7 @@ export default function AllNotes({ ...props }) {
   // make sure drawer button appears only on notes/ screen, not any nested screens. segments should be ["notes"]
   const segments = useSegments();
   const showDrawerMenuButton = segments.length === 1;
+
   // console.log(props);
   useEffect(() => {
     const open = notes.filter((note) => note.status == "open");
@@ -87,18 +85,21 @@ export default function AllNotes({ ...props }) {
 
   function toggleSelection(id) {
     // add or remove note from selection
-    console.log("selection", selectedNotes);
+
     if (selectedNotes.includes(id)) {
       const newList = selectedNotes.filter((note_id) => note_id != id);
       setSelectedNotes(newList);
+      console.log("selection", newList);
     } else {
       const newList = [...selectedNotes, id];
       setSelectedNotes(newList);
+      console.log("selection", newList);
     }
   }
   return (
     <>
       <View style={setStyle("container", styles, colors)}>
+        <Text>Selected: {selectedNotes.length}</Text>
         <FlatList
           data={openNotes}
           keyExtractor={(item) => item.id.toString()}

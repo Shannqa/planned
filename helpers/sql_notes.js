@@ -10,8 +10,8 @@ export const dbPrepTables = async (db) => {
         status TEXT DEFAULT "open",
         createdTimestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         lastEditTimestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP)`);
-       
-    /*
+
+      /*
       await tx.execAsync(`CREATE VIEW IF NOT EXISTS notesbin AS SELECT
         id,
         title,
@@ -67,7 +67,8 @@ export const dbAddNote = async (db, title, body) => {
     const add = await db.runAsync(
       "INSERT INTO notes (title, body) VALUES (?, ?);",
       title,
-      body);
+      body
+    );
     return true;
   } catch (error) {
     console.log(error);
@@ -113,16 +114,20 @@ export const dbChangeStatusMulti = async (db, ids, newStatus) => {
   try {
     await db.withExclusiveTransactionAsync(async (tx) => {
       for (const id of ids) {
-        await tx.execAsync("UPDATE notes SET status = ? WHERE id = ?;", newStatus, id);
+        const exec = await tx.execAsync(
+          "UPDATE notes SET status = ? WHERE id = ?;",
+          newStatus,
+          id
+        );
+        console.log("exec: ", exec);
       }
     });
-    console.log(result);
     return true;
   } catch (error) {
     console.log(error);
     return false;
   }
-}
+};
 
 // permanently delete a note
 export const dbDeleteNotePerm = async (db, id) => {
@@ -149,7 +154,7 @@ export const dbDeleteNotePermMulti = async (db, ids) => {
     console.log(error);
     return false;
   }
-}
+};
 
 // drop a table
 export const dbDropTable = async (db) => {

@@ -9,16 +9,18 @@ import {
 import Entypo from "@expo/vector-icons/Entypo";
 import { lightColors, darkColors, setStyle } from "./themes";
 import { SettingsContext } from "./settings_provider";
+import { NotesContext } from "./notes_provider";
+import { useSQLiteContext } from "expo-sqlite";
 
-const CustomMenu = (props) => {
-  const { style, children, layouts, ...other } = props;
-  const position = { top: 200, left: 200 };
-  return (
-    <View {...other} style={[style, position]}>
-      {children}
-    </View>
-  );
-};
+// const CustomMenu = (props) => {
+//   const { style, children, layouts, ...other } = props;
+//   const position = { top: 200, left: 200 };
+//   return (
+//     <View {...other} style={[style, position]}>
+//       {children}
+//     </View>
+//   );
+// };
 
 export default function RightMenuMulti({
   screen,
@@ -28,10 +30,13 @@ export default function RightMenuMulti({
   setSelecting,
   selectedNotes,
 }) {
+  const { changeStatusMulti, deleteNotePermMulti } = useContext(NotesContext);
   const [popupOpen, setPopupOpen] = useState(false);
   const { currentTheme, setCurrentTheme } = useContext(SettingsContext);
   let colors = currentTheme == "dark" ? dark : light;
   const [menuData, setMenuData] = useState([]);
+  const db = useSQLiteContext();
+
   useEffect(() => {
     // list of options in the menu, depending on the current open screen and if the user is currently selecting notes or not
     if (screen == "openIndex") {
@@ -79,7 +84,8 @@ export default function RightMenuMulti({
       id: 2,
       label: "Archive notes",
       action: function () {
-        changeNoteStatusMulti(db, selectedNotes, "archive");
+        console.log("selectednotes", selectedNotes.length);
+        changeStatusMulti(db, selectedNotes, "archive");
         closeSelection();
       },
     },
@@ -87,7 +93,7 @@ export default function RightMenuMulti({
       id: 3,
       label: "Delete notes",
       action: function () {
-        changeNoteStatusMulti(db, selectedNotes, "bin");
+        changeStatusMulti(db, selectedNotes, "bin");
         closeSelection();
       },
     },
@@ -98,7 +104,7 @@ export default function RightMenuMulti({
       id: 2,
       label: "Remove from archive",
       action: function () {
-        changeNoteStatusMulti(db, selectedNotes, "open");
+        changeStatusMulti(db, selectedNotes, "open");
         closeSelection();
       },
     },
@@ -106,7 +112,7 @@ export default function RightMenuMulti({
       id: 3,
       label: "Delete notes",
       action: function () {
-        changeNoteStatusMulti(db, selectedNotes, "bin");
+        changeStatusMulti(db, selectedNotes, "bin");
         closeSelection();
       },
     },
@@ -117,7 +123,7 @@ export default function RightMenuMulti({
       id: 2,
       label: "Restore notes",
       action: function () {
-        changeNoteStatusMulti(db, selectedNotes, "open");
+        changeStatusMulti(db, selectedNotes, "open");
         closeSelection();
       },
     },

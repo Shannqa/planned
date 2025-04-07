@@ -10,11 +10,11 @@ import { useSQLiteContext } from "expo-sqlite";
 export default function NewNote() {
   const { currentTheme, setCurrentTheme } = useContext(SettingsContext);
   let colors = currentTheme == "dark" ? dark : light;
-  const { notes, setNotes, getNotes } = useContext(NotesContext);
+  const { notes, setNotes, getNotes, addNote } = useContext(NotesContext);
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const db = useSQLiteContext();
-  
+
   function addNewNote() {
     addNote(db, title, body);
     setTitle("");

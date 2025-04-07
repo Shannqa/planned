@@ -26,7 +26,7 @@ const CustomMenu = (props) => {
 export default function PopupMenu({ noteId, screen }) {
   /* Workaround for a current bug - onPress doesn't work in react navigation header menu. Need to trigger menu to open on onPressIn instead */
   const [state, setState] = useState({ opened: false });
-  const { notes, setNotes, changeNoteStatus, deleteNotePerm } =
+  const { notes, setNotes, changeStatus, deleteNotePerm } =
     useContext(NotesContext);
   const { currentTheme, setCurrentTheme } = useContext(SettingsContext);
   let colors = currentTheme == "dark" ? dark : light;
@@ -50,7 +50,7 @@ export default function PopupMenu({ noteId, screen }) {
       id: "0",
       label: "Archive note",
       action: function () {
-        const change = changeNoteStatus(db, noteId, "archive");
+        changeStatus(db, noteId, "archive");
         console.log("id in popup ", noteId);
         router.back();
       },
@@ -59,7 +59,7 @@ export default function PopupMenu({ noteId, screen }) {
       id: "1",
       label: "Delete note",
       action: function () {
-        changeNoteStatus(db, noteId, "bin");
+        changeStatus(db, noteId, "bin");
         router.back();
       },
     },
@@ -70,7 +70,7 @@ export default function PopupMenu({ noteId, screen }) {
       id: "0",
       label: "Remove from archive",
       action: function () {
-        const change = changeNoteStatus(db, noteId, "open");
+        const change = changeStatus(db, noteId, "open");
         console.log(change);
         router.back();
       },
@@ -79,7 +79,7 @@ export default function PopupMenu({ noteId, screen }) {
       id: "1",
       label: "Delete note",
       action: function () {
-        changeNoteStatus(db, noteId, "bin");
+        changeStatus(db, noteId, "bin");
         router.back();
       },
     },
@@ -90,7 +90,7 @@ export default function PopupMenu({ noteId, screen }) {
       id: "0",
       label: "Restore note",
       action: function () {
-        changeNoteStatus(db, noteId, "open");
+        changeStatus(db, noteId, "open");
         router.back();
       },
     },
