@@ -43,18 +43,23 @@ export default function AllNotes({ ...props }) {
       // headerTitle: "bzz",
       // title: "bzz",
       // drawerLabel: "bb",
+      headerLeft: () => selecting && <LeftMenuMulti 
+          screen={"openIndex"}
+          selecting={selecting}
+        />,
       headerRight: () => (
-        <PopupMenuMulti
+        <RightMenuMulti 
+          screen={"openIndex"}
+          selecting={selecting}
+        />
+        /*<PopupMenuMulti
           screen={"openIndex"}
           selecting={selecting}
           startSelecting={startSelecting}
           stopSelecting={stopSelecting}
           setSelecting={setSelecting}
-        />
+        />*/
       ),
-      // headerRight: showDrawerMenuButton
-      // ? () => <PopupMenuMulti screen={"openIndex"} />
-      // : null,
     });
   }, [navigation]);
 

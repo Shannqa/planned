@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState, Component } from "react";
-import { Text, View, StyleSheet, FlatList } from "react-native";
+import { Text, View, StyleSheet, FlatList, Animated } from "react-native";
 import {
   Menu,
   MenuOptions,
@@ -33,6 +33,8 @@ export default function SlideSelect({
   const [popupOpen, setPopupOpen] = useState(false);
   const [slideOpen, setSlideOpen] = useState(false);
   const [menuData, setMenuData] = useState([]);
+   // slide menu off screen
+  const [translateY] = useState(new Animated.Value(200)); 
 
   useEffect(() => {
     if (screen == "openIndex") {
@@ -44,9 +46,24 @@ export default function SlideSelect({
     }
   }, [screen]);
 
+
   useEffect(() => {
-    setSlideOpen(selecting);
-  }, [selecting]);
+    if (slideOpen) {
+      Animated.spring(translateY, {
+        toValue: 0,
+        useNativeDriver: true
+      }).start();
+    } else {
+      Animated.spring(translateY, {
+        toValue: 200,
+        useNativeDriver: true
+      }).start();
+    }
+  }, [slideOpen, translateY]);
+  
+  function toggleSlide() {
+    setSlideOpen(!slideOpen)
+  }
 
   // options for the popup menu
   const openIndexMenu = [
@@ -120,14 +137,20 @@ export default function SlideSelect({
   }
   function onBackdropPress() {
     setPopupOpen(false);
-    setSlideOpen(false);
   }
 
   return (
-    <View style={styles.slide}>
-      <Entypo name="cross" size={26} style={styles.icon} color="black" />
-      <Text style={styles.text}>{selectedNotes.length}</Text>
-    </View>
+    <Animated.View style={[styles.slideContainer, { transform: [{ translateY }]}]}>
+      <View style={styles.slide}>
+        <Pressable
+          onPress={() => closeSelection()}>
+          <Entypo name="cross" size={26} style={styles.icon} color="black" />
+        </Pressable>
+        
+        <Text style={styles.text}>Selected notes: {selectedNotes.length}</Text>
+      </View>
+    </Animated.View>
+
   );
 }
 
