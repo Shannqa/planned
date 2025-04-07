@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState, Component } from "react";
-import { Text, View, StyleSheet, FlatList } from "react-native";
+import { Text, View, StyleSheet, FlatList, Pressable } from "react-native";
 import {
   Menu,
   MenuOptions,
@@ -26,11 +26,12 @@ export default function RightMenuMulti({
   stopSelecting,
   selecting,
   setSelecting,
+  selectedNotes,
 }) {
   const [popupOpen, setPopupOpen] = useState(false);
   const { currentTheme, setCurrentTheme } = useContext(SettingsContext);
   let colors = currentTheme == "dark" ? dark : light;
-
+  const [menuData, setMenuData] = useState([]);
   useEffect(() => {
     // list of options in the menu, depending on the current open screen and if the user is currently selecting notes or not
     if (screen == "openIndex") {

@@ -1,5 +1,12 @@
 import React, { useContext, useEffect, useState, Component } from "react";
-import { Text, View, StyleSheet, FlatList, Animated } from "react-native";
+import {
+  Text,
+  View,
+  StyleSheet,
+  FlatList,
+  Animated,
+  Pressable,
+} from "react-native";
 import {
   Menu,
   MenuOptions,
@@ -18,6 +25,7 @@ export default function LeftMenuMulti({
   setSelecting,
   selectedNotes,
   setSelectedNotes,
+  startSelecting,
   stopSelecting,
 }) {
   const { currentTheme, setCurrentTheme } = useContext(SettingsContext);
@@ -40,12 +48,12 @@ export default function LeftMenuMulti({
 
 const styles = StyleSheet.create({
   leftMenu: {
-    display: "flex",
+    // display: "flex",
     flexDirection: "row",
-    flex: 1,
-    alignItems: "center",
-    padding: 6,
-    textAlignVertical: "center",
+    // flex: 1,
+    // alignItems: "center",
+    // padding: 6,
+    // textAlignVertical: "center",
   },
   text: {
     fontSize: 18,

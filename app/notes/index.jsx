@@ -16,8 +16,8 @@ import PopupMenuMulti from "../../helpers/popup_multi";
 import { useSegments } from "expo-router";
 import { useNavigation } from "@react-navigation/native";
 import SlideSelect from "../../helpers/slide_select_menu";
-import LeftMenuMulti from "../../helpers/left_menu_multi";
 import RightMenuMulti from "../../helpers/right_menu_multi";
+import LeftMenuMulti from "../../helpers/left_menu_multi";
 
 export default function AllNotes({ ...props }) {
   const { notes, setNotes, openNotes, setOpenNotes } = useContext(NotesContext);
@@ -40,27 +40,38 @@ export default function AllNotes({ ...props }) {
 
   useLayoutEffect(() => {
     const parent = navigation.getParent();
-    // console.log(parent);
     parent.setOptions({
-      // headerTitle: "bzz",
-      // title: "bzz",
-      // drawerLabel: "bb",
-      headerLeft: () =>
-        selecting && (
-          <LeftMenuMulti screen={"openIndex"} selecting={selecting} />
-        ),
       headerRight: () => (
-        <RightMenuMulti screen={"openIndex"} selecting={selecting} />
-        /*<PopupMenuMulti
+        <RightMenuMulti
           screen={"openIndex"}
           selecting={selecting}
           startSelecting={startSelecting}
           stopSelecting={stopSelecting}
-          setSelecting={setSelecting}
-        />*/
+          selectedNotes={selectedNotes}
+        />
       ),
     });
-  }, [navigation]);
+
+    if (selecting) {
+      parent.setOptions({
+        title: "",
+        headerLeft: () => (
+          <LeftMenuMulti
+            screen={"openIndex"}
+            selecting={selecting}
+            startSelecting={startSelecting}
+            stopSelecting={stopSelecting}
+            selectedNotes={selectedNotes}
+          />
+        ),
+      });
+    } else {
+      parent.setOptions({
+        title: "All notes",
+        headerLeft: null,
+      });
+    }
+  }, [navigation, selecting, selectedNotes]);
 
   function startSelecting() {
     // console.log(selecting);
@@ -152,14 +163,6 @@ export default function AllNotes({ ...props }) {
           </View>
         </View>
       </View>
-      <SlideSelect
-        screen={"openIndex"}
-        selecting={selecting}
-        setSelecting={setSelecting}
-        selectedNotes={selectedNotes}
-        setSelectedNotes={selectedNotes}
-        stopSelecting={stopSelecting}
-      />
     </>
   );
 }
