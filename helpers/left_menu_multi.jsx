@@ -12,7 +12,7 @@ import { lightColors, darkColors, setStyle } from "./themes";
 import { SettingsContext } from "./settings_provider";
 import { NotesContext } from "./notes_provider";
 
-export default function SlideSelect({
+export default function LeftMenuMulti({
   screen,
   selecting,
   setSelecting,
@@ -24,19 +24,17 @@ export default function SlideSelect({
   // let colors = currentTheme == "dark" ? dark : light;
   // const [leftMenuOpen, setLeftMenuOpen] = useState(false);
 
-
   function closeSelection() {
     stopSelecting();
   }
 
   return (
-      <View style={styles.leftMenu}>
-        <Pressable
-          onPress={() => closeSelection()}>
-          <Entypo name="cross" size={26} style={styles.icon} color="black" />
-        </Pressable>
-        <Text style={styles.text}>Selected notes:  {selectedNotes.length}</Text>
-      </View>
+    <View style={styles.leftMenu}>
+      <Pressable onPress={() => closeSelection()}>
+        <Entypo name="cross" size={26} style={styles.icon} color="black" />
+      </Pressable>
+      <Text style={styles.text}>Selected notes: {selectedNotes.length}</Text>
+    </View>
   );
 }
 

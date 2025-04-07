@@ -20,7 +20,7 @@ const CustomMenu = (props) => {
   );
 };
 
-export default function PopupMenuMulti({
+export default function RightMenuMulti({
   screen,
   startSelecting,
   stopSelecting,
@@ -31,8 +31,8 @@ export default function PopupMenuMulti({
   const { currentTheme, setCurrentTheme } = useContext(SettingsContext);
   let colors = currentTheme == "dark" ? dark : light;
 
-useEffect(() => {
-  // list of options in the menu, depending on the current open screen and if the user is currently selecting notes or not
+  useEffect(() => {
+    // list of options in the menu, depending on the current open screen and if the user is currently selecting notes or not
     if (screen == "openIndex") {
       if (!selecting) {
         setMenuData([allScreensMenu[0]]);
@@ -54,7 +54,7 @@ useEffect(() => {
     }
   }, [screen, selecting]);
 
-const allScreensMenu = [
+  const allScreensMenu = [
     {
       id: 0,
       label: "Select notes",
@@ -73,8 +73,7 @@ const allScreensMenu = [
     },
   ];
 
-
-const openIndexMenu = [
+  const openIndexMenu = [
     {
       id: 2,
       label: "Archive notes",
@@ -131,7 +130,6 @@ const openIndexMenu = [
     },
   ];
 
-
   function closeSelection() {
     onOptionSelect();
     stopSelecting();
@@ -139,9 +137,7 @@ const openIndexMenu = [
     // right menu - close right menu
     // left menu - close left menu
     // index - set selecting false, set selected notes arr to empty
-    
   }
-  
 
   function onOptionSelect(value) {
     setPopupOpen(false);
@@ -175,14 +171,13 @@ const openIndexMenu = [
           data={menuData}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => {
-              return (
-                <MenuOption
-                  onSelect={() => item.action()}
-                  text={item.label}
-                  style={styles.menuText}
-                />
-              );
-            } 
+            return (
+              <MenuOption
+                onSelect={() => item.action()}
+                text={item.label}
+                style={styles.menuText}
+              />
+            );
           }}
         />
       </MenuOptions>
@@ -276,4 +271,3 @@ const dark = StyleSheet.create({
     backgroundColor: darkColors.secondary,
   },
 });
-

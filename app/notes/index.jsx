@@ -16,6 +16,8 @@ import PopupMenuMulti from "../../helpers/popup_multi";
 import { useSegments } from "expo-router";
 import { useNavigation } from "@react-navigation/native";
 import SlideSelect from "../../helpers/slide_select_menu";
+import LeftMenuMulti from "../../helpers/left_menu_multi";
+import RightMenuMulti from "../../helpers/right_menu_multi";
 
 export default function AllNotes({ ...props }) {
   const { notes, setNotes, openNotes, setOpenNotes } = useContext(NotesContext);
@@ -43,15 +45,12 @@ export default function AllNotes({ ...props }) {
       // headerTitle: "bzz",
       // title: "bzz",
       // drawerLabel: "bb",
-      headerLeft: () => selecting && <LeftMenuMulti 
-          screen={"openIndex"}
-          selecting={selecting}
-        />,
+      headerLeft: () =>
+        selecting && (
+          <LeftMenuMulti screen={"openIndex"} selecting={selecting} />
+        ),
       headerRight: () => (
-        <RightMenuMulti 
-          screen={"openIndex"}
-          selecting={selecting}
-        />
+        <RightMenuMulti screen={"openIndex"} selecting={selecting} />
         /*<PopupMenuMulti
           screen={"openIndex"}
           selecting={selecting}
