@@ -83,8 +83,8 @@ export default function RightMenuMulti({
     {
       id: 2,
       label: "Archive notes",
-      action: function () {
-        console.log("selectednotes", selectedNotes.length);
+      action: function (selectedNotes) {
+        // console.log("selectednotes", selectedNotes.length);
         changeStatusMulti(db, selectedNotes, "archive");
         closeSelection();
       },
@@ -180,7 +180,7 @@ export default function RightMenuMulti({
           renderItem={({ item }) => {
             return (
               <MenuOption
-                onSelect={() => item.action()}
+                onSelect={() => item.action(selectedNotes)}
                 text={item.label}
                 style={styles.menuText}
               />
