@@ -4,7 +4,7 @@ import { useLocalSearchParams, Stack, Link, router } from "expo-router";
 import { NotesContext } from "../../../helpers/notes_provider";
 import { SettingsContext } from "../../../helpers/settings_provider";
 import { lightColors, darkColors, setStyle } from "../../../helpers/themes";
-import PopupMenu from "../../../helpers/popup_component";
+import RightMenuSingle from "../../../helpers/right_menu_single";
 
 export default function ViewNote() {
   const params = useLocalSearchParams();
@@ -34,7 +34,7 @@ export default function ViewNote() {
         options={{
           title: `Note id ${params.id}`,
           headerRight: () => (
-            <PopupMenu noteId={params.id} screen={"binNote"} />
+            <RightMenuSingle noteId={params.id} screen={"binNote"} />
           ),
         }}
       />

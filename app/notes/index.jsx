@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect, useLayoutEffect } from "react";
-import { Link, useRouter, Drawer, Stack, Screen } from "expo-router";
+import { Link, useRouter, useSegments } from "expo-router";
 import {
   View,
   Text,
@@ -11,7 +11,6 @@ import {
 import { NotesContext } from "../../helpers/notes_provider";
 import { lightColors, darkColors, setStyle } from "../../helpers/themes";
 import { SettingsContext } from "../../helpers/settings_provider";
-import { useSegments } from "expo-router";
 import { useNavigation } from "@react-navigation/native";
 import RightMenuMulti from "../../helpers/right_menu_multi";
 import LeftMenuMulti from "../../helpers/left_menu_multi";
@@ -89,14 +88,18 @@ export default function AllNotes({ ...props }) {
     if (selectedNotes.includes(id)) {
       // remove selection
       const newList = selectedNotes.filter((note_id) => note_id != id);
-      if (new Promise((resolve, reject) => {
-        
-      }))
-      setSelectedNotes(newList);
+      if (new Promise((resolve, reject) => {})) setSelectedNotes(newList);
+      if (newList.length == 0) {
+        setSelecting(false);
+      }
       console.log("selection", newList);
     } else {
+      // add note to selection
       const newList = [...selectedNotes, id];
       setSelectedNotes(newList);
+      if (!selecting) {
+        setSelecting(true);
+      }
       // console.log("selection", newList);
     }
   }
@@ -186,6 +189,7 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
   },
+  selected: {},
   buttonContainer: {
     position: "relative",
     flex: 1,
@@ -206,19 +210,13 @@ const styles = StyleSheet.create({
   addButtonText: {
     fontSize: 48,
   },
-  selected: {
-    // backgroundColor: "yellow",
-  },
 });
 
 const light = StyleSheet.create({
   container: {
     backgroundColor: lightColors.secondary,
   },
-  singleNote: {
-    // backgroundColor: lightColors.primary,
-    // boxShadow: "2 2 2 lightgrey",
-  },
+  singleNote: {},
   title: {
     color: lightColors.font,
   },
@@ -226,12 +224,6 @@ const light = StyleSheet.create({
     color: lightColors.font,
   },
   buttonContainer: {},
-  addButton: {
-    backgroundColor: lightColors.detail,
-  },
-  addButtonText: {
-    color: lightColors.font,
-  },
   selected: {
     backgroundColor: lightColors.detail2,
     boxShadow: "2 2 2 lightgrey",
@@ -240,16 +232,19 @@ const light = StyleSheet.create({
     backgroundColor: lightColors.primary,
     boxShadow: "2 2 2 lightgrey",
   },
+  addButton: {
+    backgroundColor: lightColors.detail,
+  },
+  addButtonText: {
+    color: lightColors.font,
+  },
 });
 
 const dark = StyleSheet.create({
   container: {
     backgroundColor: darkColors.secondary,
   },
-  singleNote: {
-    // backgroundColor: darkColors.primary,
-    // boxShadow: "2 2 2 rgba(0, 0, 0, 0.8)",
-  },
+  singleNote: {},
   title: {
     color: darkColors.font,
   },
@@ -257,12 +252,6 @@ const dark = StyleSheet.create({
     color: darkColors.font,
   },
   buttonContainer: {},
-  addButton: {
-    backgroundColor: darkColors.detail,
-  },
-  addButtonText: {
-    color: darkColors.font,
-  },
   selected: {
     backgroundColor: darkColors.detail2,
     boxShadow: "2 2 2 rgba(0, 0, 0, 0.8)",
@@ -270,5 +259,11 @@ const dark = StyleSheet.create({
   notSelected: {
     backgroundColor: darkColors.primary,
     boxShadow: "2 2 2 rgba(0, 0, 0, 0.8)",
+  },
+  addButton: {
+    backgroundColor: darkColors.detail,
+  },
+  addButtonText: {
+    color: darkColors.font,
   },
 });

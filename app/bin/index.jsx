@@ -1,14 +1,6 @@
-import React, { useContext, useEffect } from "react";
-import { Link } from "expo-router";
-import {
-  View,
-  Text,
-  FlatList,
-  StyleSheet,
-  Button,
-  Pressable,
-  useColorScheme,
-} from "react-native";
+import React, { useContext, useEffect, useState, useLayoutEffect } from "react";
+import { useNavigation, useRouter } from "expo-router";
+import { View, Text, FlatList, StyleSheet, Pressable } from "react-native";
 import { NotesContext } from "../../helpers/notes_provider";
 import { lightColors, darkColors, setStyle } from "../../helpers/themes";
 import { SettingsContext } from "../../helpers/settings_provider";
@@ -21,13 +13,15 @@ export default function Bin() {
   const [selectedNotes, setSelectedNotes] = useState([]);
   const { currentTheme, setCurrentTheme } = useContext(SettingsContext);
   let colors = currentTheme == "dark" ? dark : light;
+  const navigation = useNavigation();
+  const router = useRouter();
 
   useEffect(() => {
     const bin = notes.filter((note) => note.status == "bin");
     setBinNotes(bin);
   }, [notes]);
 
-useLayoutEffect(() => {
+  useLayoutEffect(() => {
     const parent = navigation.getParent();
     parent.setOptions({
       headerRight: () => (
@@ -62,7 +56,39 @@ useLayoutEffect(() => {
     }
   }, [navigation, selecting, selectedNotes]);
 
+  function startSelecting() {
+    // console.log(selecting);
+    setSelecting(true);
+    // show slide in menu
+  }
 
+  function stopSelecting() {
+    setSelecting(false);
+    setSelectedNotes([]);
+    // hide slide in menu
+  }
+
+  function toggleSelection(id) {
+    // add or remove note from selection
+
+    if (selectedNotes.includes(id)) {
+      // remove selection
+      const newList = selectedNotes.filter((note_id) => note_id != id);
+      if (new Promise((resolve, reject) => {})) setSelectedNotes(newList);
+      if (newList.length == 0) {
+        setSelecting(false);
+      }
+      console.log("selection", newList);
+    } else {
+      // add note to selection
+      const newList = [...selectedNotes, id];
+      setSelectedNotes(newList);
+      if (!selecting) {
+        setSelecting(true);
+      }
+      // console.log("selection", newList);
+    }
+  }
   return (
     <View style={setStyle("container", styles, colors)}>
       <FlatList
@@ -70,14 +96,25 @@ useLayoutEffect(() => {
         keyExtractor={(item) => item.id.toString()}
         numColumns={2}
         columnWrapperStyle={styles.row}
-        renderItem={({ item }) => (
-          <View style={setStyle("singleNote", styles, colors)}>
-            <Link
-              style={setStyle("box", styles, colors)}
-              href={`bin/${item.id}/view`}
-              asChild
+        renderItem={({ item }) => {
+          const isSelected = selectedNotes.includes(item.id);
+          return (
+            <View
+              style={
+                isSelected
+                  ? [styles.singleNote, colors.selected]
+                  : [styles.singleNote, colors.notSelected]
+              }
             >
-              <Pressable>
+              <Pressable
+                onPress={
+                  selecting
+                    ? () => toggleSelection(item.id)
+                    : () => router.push(`bin/${item.id}/view`)
+                }
+                onLongPress={() => toggleSelection(item.id)}
+                style={styles.box}
+              >
                 <View>
                   <Text style={setStyle("title", styles, colors)}>
                     {item.title}
@@ -87,9 +124,9 @@ useLayoutEffect(() => {
                   </Text>
                 </View>
               </Pressable>
-            </Link>
-          </View>
-        )}
+            </View>
+          );
+        }}
       />
     </View>
   );
@@ -123,25 +160,12 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
   },
+  selected: {},
   buttonContainer: {
     position: "relative",
     flex: 1,
     flexDirection: "row",
     justifyContent: "flex-end",
-  },
-  addButton: {
-    width: 80,
-    height: 80,
-    position: "absolute",
-    bottom: 10,
-    right: 0,
-    borderRadius: 50,
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  addButtonText: {
-    fontSize: 48,
   },
 });
 
@@ -149,10 +173,7 @@ const light = StyleSheet.create({
   container: {
     backgroundColor: lightColors.secondary,
   },
-  singleNote: {
-    backgroundColor: lightColors.primary,
-    boxShadow: "2 2 2 lightgrey",
-  },
+  singleNote: {},
   title: {
     color: lightColors.font,
   },
@@ -160,11 +181,13 @@ const light = StyleSheet.create({
     color: lightColors.font,
   },
   buttonContainer: {},
-  addButton: {
-    backgroundColor: lightColors.detail,
+  selected: {
+    backgroundColor: lightColors.detail2,
+    boxShadow: "2 2 2 lightgrey",
   },
-  addButtonText: {
-    color: lightColors.font,
+  notSelected: {
+    backgroundColor: lightColors.primary,
+    boxShadow: "2 2 2 lightgrey",
   },
 });
 
@@ -172,10 +195,7 @@ const dark = StyleSheet.create({
   container: {
     backgroundColor: darkColors.secondary,
   },
-  singleNote: {
-    backgroundColor: darkColors.primary,
-    boxShadow: "2 2 2 rgba(0, 0, 0, 0.8)",
-  },
+  singleNote: {},
   title: {
     color: darkColors.font,
   },
@@ -183,10 +203,12 @@ const dark = StyleSheet.create({
     color: darkColors.font,
   },
   buttonContainer: {},
-  addButton: {
-    backgroundColor: darkColors.detail,
+  selected: {
+    backgroundColor: darkColors.detail2,
+    boxShadow: "2 2 2 rgba(0, 0, 0, 0.8)",
   },
-  addButtonText: {
-    color: darkColors.font,
+  notSelected: {
+    backgroundColor: darkColors.primary,
+    boxShadow: "2 2 2 rgba(0, 0, 0, 0.8)",
   },
 });

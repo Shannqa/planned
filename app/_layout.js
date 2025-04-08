@@ -14,7 +14,6 @@ import { useSegments } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import Entypo from "@expo/vector-icons/Entypo";
 import { MenuProvider } from "react-native-popup-menu";
-import PopupMenuMulti from "../helpers/popup_multi";
 import AllNotes from "./notes";
 
 export default function RootLayout() {
