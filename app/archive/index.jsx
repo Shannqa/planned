@@ -12,10 +12,14 @@ import {
 import { NotesContext } from "../../helpers/notes_provider";
 import { lightColors, darkColors, setStyle } from "../../helpers/themes";
 import { SettingsContext } from "../../helpers/settings_provider";
+ import RightMenuMulti from "../../helpers/right_menu_multi";
+import LeftMenuMulti from "../../helpers/left_menu_multi";
 
 export default function Archive() {
   const { notes, setNotes, archiveNotes, setArchiveNotes } =
     useContext(NotesContext);
+  const [selecting, setSelecting] = useState(false);
+const [selectedNotes, setSelectedNotes] = useState([]);
   const { currentTheme, setCurrentTheme } = useContext(SettingsContext);
   let colors = currentTheme == "dark" ? dark : light;
 
@@ -25,6 +29,42 @@ export default function Archive() {
     // console.log("notes", notes);
     setArchiveNotes(archived);
   }, [notes]);
+
+useLayoutEffect(() => {
+    const parent = navigation.getParent();
+    parent.setOptions({
+      headerRight: () => (
+        <RightMenuMulti
+          screen={"openIndex"}
+          selecting={selecting}
+          startSelecting={startSelecting}
+          stopSelecting={stopSelecting}
+          selectedNotes={selectedNotes}
+        />
+      ),
+    });
+
+    if (selecting) {
+      parent.setOptions({
+        title: "",
+        headerLeft: () => (
+          <LeftMenuMulti
+            screen={"archiveIndex"}
+            selecting={selecting}
+            startSelecting={startSelecting}
+            stopSelecting={stopSelecting}
+            selectedNotes={selectedNotes}
+          />
+        ),
+      });
+    } else {
+      parent.setOptions({
+        title: "Archive",
+        headerLeft: null,
+      });
+    }
+  }, [navigation, selecting, selectedNotes]);
+
 
   return (
     <View style={setStyle("container", styles, colors)}>

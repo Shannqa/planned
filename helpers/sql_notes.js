@@ -114,12 +114,12 @@ export const dbChangeStatusMulti = async (db, ids, newStatus) => {
   try {
     await db.withExclusiveTransactionAsync(async (tx) => {
       for (const id of ids) {
-        const exec = await tx.execAsync(
+        const result = await tx.runAsync(
           "UPDATE notes SET status = ? WHERE id = ?;",
           newStatus,
           id
         );
-        console.log("exec: ", exec);
+        console.log("result: ", result);
       }
     });
     return true;
@@ -133,8 +133,7 @@ export const dbChangeStatusMulti = async (db, ids, newStatus) => {
 export const dbDeleteNotePerm = async (db, id) => {
   try {
     const result = await db.runAsync("DELETE FROM notes WHERE id = ?", id);
-    // console.log(result);
-    return true;
+    if (result) return true;
   } catch (error) {
     console.log(error);
     return false;
@@ -146,7 +145,7 @@ export const dbDeleteNotePermMulti = async (db, ids) => {
   try {
     await db.withExclusiveTransactionAsync(async (tx) => {
       for (const id of ids) {
-        await tx.execAsync("DELETE FROM notes WHERE id = ?", id);
+        await tx.runAsync("DELETE FROM notes WHERE id = ?", id);
       }
     });
     return true;
@@ -159,9 +158,8 @@ export const dbDeleteNotePermMulti = async (db, ids) => {
 // drop a table
 export const dbDropTable = async (db) => {
   try {
-    const result = await db.execAsync("DROP TABLE notes");
-    // console.log(result);
-    return true;
+    const result = await db.runAsync("DROP TABLE notes");
+    if (result) return true;
   } catch (error) {
     console.log(error);
     return false;

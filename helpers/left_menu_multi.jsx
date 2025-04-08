@@ -29,7 +29,7 @@ export default function LeftMenuMulti({
   stopSelecting,
 }) {
   const { currentTheme, setCurrentTheme } = useContext(SettingsContext);
-  // let colors = currentTheme == "dark" ? dark : light;
+   let colors = currentTheme == "dark" ? dark : light;
   // const [leftMenuOpen, setLeftMenuOpen] = useState(false);
 
   function closeSelection() {
@@ -38,8 +38,8 @@ export default function LeftMenuMulti({
 
   return (
     <View style={styles.leftMenu}>
-      <Pressable onPress={() => closeSelection()}>
-        <Entypo name="cross" size={26} style={styles.icon} color="black" />
+      <Pressable style={styles.menuIcon} onPress={() => closeSelection()}>
+        <Entypo name="cross" size={26} color={colors.menuIcon.color} />
       </Pressable>
       <Text style={styles.text}>Selected notes: {selectedNotes.length}</Text>
     </View>
@@ -52,13 +52,24 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     // flex: 1,
     // alignItems: "center",
-    // padding: 6,
     // textAlignVertical: "center",
   },
   text: {
     fontSize: 18,
   },
-  icon: {
-    paddingRight: 4,
+  menuIcon: {
+    paddingLeft: 15,
   },
 });
+
+const light = StyleSheet.create({
+  menuIcon: {
+  color: lightColors.font
+}
+});
+
+const dark = StyleSheet.create({
+  menuIcon: {
+    color: darkColors.font
+  }
+})

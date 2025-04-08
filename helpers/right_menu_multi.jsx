@@ -92,7 +92,7 @@ export default function RightMenuMulti({
     {
       id: 3,
       label: "Delete notes",
-      action: function () {
+      action: function (selectedNotes) {
         changeStatusMulti(db, selectedNotes, "bin");
         closeSelection();
       },
@@ -103,7 +103,7 @@ export default function RightMenuMulti({
     {
       id: 2,
       label: "Remove from archive",
-      action: function () {
+      action: function (selectedNotes) {
         changeStatusMulti(db, selectedNotes, "open");
         closeSelection();
       },
@@ -111,7 +111,7 @@ export default function RightMenuMulti({
     {
       id: 3,
       label: "Delete notes",
-      action: function () {
+      action: function (selectedNotes) {
         changeStatusMulti(db, selectedNotes, "bin");
         closeSelection();
       },
@@ -122,7 +122,7 @@ export default function RightMenuMulti({
     {
       id: 2,
       label: "Restore notes",
-      action: function () {
+      action: function (selectedNotes) {
         changeStatusMulti(db, selectedNotes, "open");
         closeSelection();
       },
@@ -130,7 +130,7 @@ export default function RightMenuMulti({
     {
       id: 3,
       label: "Remove permanently",
-      action: function () {
+      action: function (selectedNotes) {
         deleteNotePermMulti(db, selectedNotes);
         closeSelection();
       },
@@ -164,13 +164,13 @@ export default function RightMenuMulti({
       // onSelect={(value) => onOptionSelect()}
     >
       <MenuTrigger
-        style={styles.trigger}
+        style={styles.menuIcon}
         onPressIn={() => onTriggerPress()}
         customStyles={{
           triggerTouchable: { onPressIn: () => onTriggerPress() },
         }}
       >
-        <Entypo name="dots-three-vertical" size={22} color="black" />
+        <Entypo name="dots-three-vertical" size={22} color={colors.menuIcon.color} />
       </MenuTrigger>
 
       <MenuOptions style={light.menu}>
@@ -193,9 +193,7 @@ export default function RightMenuMulti({
 }
 
 const styles = StyleSheet.create({
-  trigger: {
-    paddingRight: 15,
-  },
+  
   menu: {
     position: "absolute",
     top: 2,
@@ -233,6 +231,9 @@ const styles = StyleSheet.create({
   text2: {
     backgroundColor: "red",
   },
+  menuIcon: {
+    paddingRight: 15,
+  },
 });
 
 const light = StyleSheet.create({
@@ -253,6 +254,9 @@ const light = StyleSheet.create({
     backgroundColor: lightColors.secondary,
     boxShadow: "2 2 2 rgba(0, 0, 0, 0.8)",
   },
+  menuIcon: {
+    color: lightColors.font
+  }
 });
 
 const dark = StyleSheet.create({
@@ -277,4 +281,7 @@ const dark = StyleSheet.create({
   menuUnpressed: {
     backgroundColor: darkColors.secondary,
   },
+  menuIcon: {
+    color: darkColors.font
+  }
 });

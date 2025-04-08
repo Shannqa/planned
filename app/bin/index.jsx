@@ -12,9 +12,13 @@ import {
 import { NotesContext } from "../../helpers/notes_provider";
 import { lightColors, darkColors, setStyle } from "../../helpers/themes";
 import { SettingsContext } from "../../helpers/settings_provider";
+import RightMenuMulti from "../../helpers/right_menu_multi";
+import LeftMenuMulti from "../../helpers/left_menu_multi";
 
 export default function Bin() {
   const { notes, setNotes, binNotes, setBinNotes } = useContext(NotesContext);
+  const [selecting, setSelecting] = useState(false);
+  const [selectedNotes, setSelectedNotes] = useState([]);
   const { currentTheme, setCurrentTheme } = useContext(SettingsContext);
   let colors = currentTheme == "dark" ? dark : light;
 
@@ -22,6 +26,42 @@ export default function Bin() {
     const bin = notes.filter((note) => note.status == "bin");
     setBinNotes(bin);
   }, [notes]);
+
+useLayoutEffect(() => {
+    const parent = navigation.getParent();
+    parent.setOptions({
+      headerRight: () => (
+        <RightMenuMulti
+          screen={"openIndex"}
+          selecting={selecting}
+          startSelecting={startSelecting}
+          stopSelecting={stopSelecting}
+          selectedNotes={selectedNotes}
+        />
+      ),
+    });
+
+    if (selecting) {
+      parent.setOptions({
+        title: "",
+        headerLeft: () => (
+          <LeftMenuMulti
+            screen={"binIndex"}
+            selecting={selecting}
+            startSelecting={startSelecting}
+            stopSelecting={stopSelecting}
+            selectedNotes={selectedNotes}
+          />
+        ),
+      });
+    } else {
+      parent.setOptions({
+        title: "Bin",
+        headerLeft: null,
+      });
+    }
+  }, [navigation, selecting, selectedNotes]);
+
 
   return (
     <View style={setStyle("container", styles, colors)}>

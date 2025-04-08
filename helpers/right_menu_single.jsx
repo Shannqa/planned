@@ -23,7 +23,7 @@ const CustomMenu = (props) => {
   );
 };
 
-export default function PopupMenu({ noteId, screen }) {
+export default function RightMenuSingle({ noteId, screen }) {
   /* Workaround for a current bug - onPress doesn't work in react navigation header menu. Need to trigger menu to open on onPressIn instead */
   const [state, setState] = useState({ opened: false });
   const { notes, setNotes, changeStatus, deleteNotePerm } =
@@ -122,13 +122,13 @@ export default function PopupMenu({ noteId, screen }) {
       onSelect={(value) => onOptionSelect(value)}
     >
       <MenuTrigger
-        style={styles.trigger}
+        style={styles.menuIcon}
         onPressIn={() => onTriggerPress()}
         customStyles={{
           triggerTouchable: { onPressIn: () => onTriggerPress() },
         }}
       >
-        <Entypo name="dots-three-vertical" size={22} color="black" />
+        <Entypo name="dots-three-vertical" size={22} color={colors.menuIcon.color} />
       </MenuTrigger>
       <MenuOptions style={light.menu}>
         {/* <MenuOption onSelect={() => selector()} text={"label"} /> */}
@@ -183,6 +183,9 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     flexGrow: 1,
   },
+  menuIcon: {
+    paddingRight: 15,
+  },
 });
 
 const light = StyleSheet.create({
@@ -204,6 +207,9 @@ const light = StyleSheet.create({
     backgroundColor: lightColors.secondary,
     boxShadow: "2 2 2 rgba(0, 0, 0, 0.8)",
   },
+  menuIcon: {
+  color: lightColors.font
+}
 });
 
 const dark = StyleSheet.create({
@@ -228,4 +234,7 @@ const dark = StyleSheet.create({
   menuUnpressed: {
     backgroundColor: darkColors.secondary,
   },
+  menuIcon: {
+    color: darkColors.font
+  }
 });

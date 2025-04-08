@@ -87,19 +87,22 @@ export default function AllNotes({ ...props }) {
     // add or remove note from selection
 
     if (selectedNotes.includes(id)) {
+      // remove selection
       const newList = selectedNotes.filter((note_id) => note_id != id);
+      if (new Promise((resolve, reject) => {
+        
+      }))
       setSelectedNotes(newList);
       console.log("selection", newList);
     } else {
       const newList = [...selectedNotes, id];
       setSelectedNotes(newList);
-      console.log("selection", newList);
+      // console.log("selection", newList);
     }
   }
   return (
     <>
       <View style={setStyle("container", styles, colors)}>
-        <Text>Selected: {selectedNotes.length}</Text>
         <FlatList
           data={openNotes}
           keyExtractor={(item) => item.id.toString()}
@@ -113,18 +116,9 @@ export default function AllNotes({ ...props }) {
                   isSelected
                     ? [styles.singleNote, colors.selected]
                     : [styles.singleNote, colors.notSelected]
-                  // isSelected
-                  //   ? setStyle(["singleNote", "selected"], styles, colors)
-                  //   : setStyle(["singleNote", "notSelected"], styles, colors)
                 }
               >
-                {/* <Link
-                style={setStyle("box", styles, colors)}
-                href={`notes/${item.id}/view`}
-                asChild
-              > */}
                 <Pressable
-                  // onPress={() => router.push(`notes/${item.id}/view`)}
                   onPress={
                     selecting
                       ? () => toggleSelection(item.id)
@@ -140,12 +134,8 @@ export default function AllNotes({ ...props }) {
                     <Text style={setStyle("text", styles, colors)}>
                       {item.body}
                     </Text>
-                    <Text style={{ color: "red" }}>
-                      {selecting ? "true" : "false"}
-                    </Text>
                   </View>
                 </Pressable>
-                {/* </Link> */}
               </View>
             );
           }}
