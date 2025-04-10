@@ -39,6 +39,14 @@
         }
       ],
       "expo-sqlite"
-    ]
+    ],
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "0c7266ab-c214-483d-9f3b-fa229416cce2"
+      }
+    }
   }
 }

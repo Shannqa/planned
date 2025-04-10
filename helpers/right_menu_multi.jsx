@@ -162,6 +162,7 @@ export default function RightMenuMulti({
       opened={popupOpen}
       onBackdropPress={() => onBackdropPress()}
       // onSelect={(value) => onOptionSelect()}
+      style={styles.menu}
     >
       <MenuTrigger
         style={styles.menuIcon}
@@ -170,7 +171,11 @@ export default function RightMenuMulti({
           triggerTouchable: { onPressIn: () => onTriggerPress() },
         }}
       >
-        <Entypo name="dots-three-vertical" size={22} color={colors.menuIcon.color} />
+        <Entypo
+          name="dots-three-vertical"
+          size={20}
+          color={colors.menuIcon.color}
+        />
       </MenuTrigger>
 
       <MenuOptions style={light.menu}>
@@ -193,14 +198,12 @@ export default function RightMenuMulti({
 }
 
 const styles = StyleSheet.create({
-  
   menu: {
-    position: "absolute",
-    top: 2,
-    right: 2,
     zIndex: 10,
-    paddingTop: 8,
-    paddingBottom: 8,
+    paddingHorizontal: 8,
+    flexDirection: "row",
+    alignItems: "center",
+    borderRadius: 10,
   },
   menuItem: {
     padding: 0,
@@ -232,7 +235,13 @@ const styles = StyleSheet.create({
     backgroundColor: "red",
   },
   menuIcon: {
-    paddingRight: 15,
+    marginVertical: 8,
+    marginHorizontal: 5,
+    borderRadius: 10,
+    height: 24,
+    width: 24,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
 
@@ -255,8 +264,8 @@ const light = StyleSheet.create({
     boxShadow: "2 2 2 rgba(0, 0, 0, 0.8)",
   },
   menuIcon: {
-    color: lightColors.font
-  }
+    color: lightColors.font,
+  },
 });
 
 const dark = StyleSheet.create({
@@ -282,6 +291,6 @@ const dark = StyleSheet.create({
     backgroundColor: darkColors.secondary,
   },
   menuIcon: {
-    color: darkColors.font
-  }
+    color: darkColors.font,
+  },
 });

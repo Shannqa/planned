@@ -128,7 +128,11 @@ export default function RightMenuSingle({ noteId, screen }) {
           triggerTouchable: { onPressIn: () => onTriggerPress() },
         }}
       >
-        <Entypo name="dots-three-vertical" size={22} color={colors.menuIcon.color} />
+        <Entypo
+          name="dots-three-vertical"
+          size={20}
+          color={colors.menuIcon.color}
+        />
       </MenuTrigger>
       <MenuOptions style={light.menu}>
         {/* <MenuOption onSelect={() => selector()} text={"label"} /> */}
@@ -184,7 +188,12 @@ const styles = StyleSheet.create({
     flexGrow: 1,
   },
   menuIcon: {
-    paddingRight: 15,
+    marginRight: 15,
+    borderRadius: 24,
+    height: 24,
+    width: 24,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
 
@@ -208,8 +217,8 @@ const light = StyleSheet.create({
     boxShadow: "2 2 2 rgba(0, 0, 0, 0.8)",
   },
   menuIcon: {
-  color: lightColors.font
-}
+    color: lightColors.font,
+  },
 });
 
 const dark = StyleSheet.create({
@@ -235,6 +244,6 @@ const dark = StyleSheet.create({
     backgroundColor: darkColors.secondary,
   },
   menuIcon: {
-    color: darkColors.font
-  }
+    color: darkColors.font,
+  },
 });

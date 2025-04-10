@@ -29,7 +29,7 @@ export default function LeftMenuMulti({
   stopSelecting,
 }) {
   const { currentTheme, setCurrentTheme } = useContext(SettingsContext);
-   let colors = currentTheme == "dark" ? dark : light;
+  let colors = currentTheme == "dark" ? dark : light;
   // const [leftMenuOpen, setLeftMenuOpen] = useState(false);
 
   function closeSelection() {
@@ -48,28 +48,32 @@ export default function LeftMenuMulti({
 
 const styles = StyleSheet.create({
   leftMenu: {
-    // display: "flex",
     flexDirection: "row",
-    // flex: 1,
-    // alignItems: "center",
-    // textAlignVertical: "center",
+    alignItems: "center",
+    justifyContent: "center",
   },
   text: {
-    fontSize: 18,
+    fontSize: 20,
+    fontFamily: "sans-serif-medium",
   },
   menuIcon: {
-    paddingLeft: 15,
+    marginHorizontal: 15,
+    borderRadius: 24,
+    height: 24,
+    width: 24,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
 
 const light = StyleSheet.create({
   menuIcon: {
-  color: lightColors.font
-}
+    color: lightColors.font,
+  },
 });
 
 const dark = StyleSheet.create({
   menuIcon: {
-    color: darkColors.font
-  }
-})
+    color: darkColors.font,
+  },
+});

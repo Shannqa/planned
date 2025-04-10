@@ -87,17 +87,6 @@ function DrawerCustom() {
           }}
         />
         <Drawer.Screen
-          name="settings"
-          href="/settings"
-          options={{
-            title: "Settings",
-            drawerLabel: "Settings",
-            drawerIcon: ({ focused, size }) => (
-              <Entypo name="cog" size={20} color="black" />
-            ),
-          }}
-        />
-        <Drawer.Screen
           name="archive"
           href="/archive"
           options={{
@@ -116,6 +105,17 @@ function DrawerCustom() {
             drawerLabel: "Bin",
             drawerIcon: ({ focused, size }) => (
               <Entypo name="trash" size={20} color="black" />
+            ),
+          }}
+        />
+        <Drawer.Screen
+          name="settings"
+          href="/settings"
+          options={{
+            title: "Settings",
+            drawerLabel: "Settings",
+            drawerIcon: ({ focused, size }) => (
+              <Entypo name="cog" size={20} color="black" />
             ),
           }}
         />
