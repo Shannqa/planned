@@ -15,7 +15,7 @@ import {
   router,
   useNavigation,
 } from "expo-router";
-import { NotesContext, addNote } from "../../../helpers/notes_provider";
+import { NotesContext } from "../../../helpers/notes_provider";
 import { SettingsContext } from "../../../helpers/settings_provider";
 import { lightColors, darkColors, setStyle } from "../../../helpers/themes";
 import { useSQLiteContext } from "expo-sqlite";
@@ -28,6 +28,7 @@ import {
 
 export default function NewNote() {
   const db = useSQLiteContext();
+  const { addNote } = useContext(NotesContext);
   const [titleFocused, setTitleFocused] = useState(false);
   const [bodyFocused, setBodyFocused] = useState(false);
   const [title, setTitle] = useState("");
@@ -41,7 +42,7 @@ export default function NewNote() {
   });
   const [noteInDb, setNoteInDb] = useState(false);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
-  const content = useEditorContent(editor, { type: "string" });
+  const content = useEditorContent(editor, { type: "json" });
 
   const initialContent = `<p>Initial</p>`;
   /*
@@ -73,7 +74,7 @@ export default function NewNote() {
   }
   function addNewNote() {
     console.log(content);
-    addNote(db, title, "aaa");
+    addNote(db, title, content);
     setTitle("");
     router.push("/notes");
   }
