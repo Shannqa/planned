@@ -20,6 +20,7 @@ export default function EditNote() {
   const db = useSQLiteContext();
 
   useEffect(() => {
+    // set initial values of the existing note
     if (notes && params.id) {
       // console.log(notes);
       for (let i = 0; i < notes.length; i++) {

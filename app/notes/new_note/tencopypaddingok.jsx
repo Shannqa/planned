@@ -15,7 +15,7 @@ import { lightColors, darkColors, setStyle } from "../../../helpers/themes";
 import { addNote } from "../../../helpers/sql_notes";
 import { useSQLiteContext } from "expo-sqlite";
 import { RichText, Toolbar, useEditorBridge } from "@10play/tentap-editor";
-
+ 
 export default function NewNote() {
   const editor = useEditorBridge({
     autofocus: true,
