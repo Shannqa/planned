@@ -8,20 +8,32 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from "react-native";
-import { useLocalSearchParams, Stack, Link, router } from "expo-router";
-import { NotesContext } from "../../../helpers/notes_provider";
+import {
+  useLocalSearchParams,
+  Stack,
+  Link,
+  router,
+  useNavigation,
+} from "expo-router";
+import { NotesContext, addNote } from "../../../helpers/notes_provider";
 import { SettingsContext } from "../../../helpers/settings_provider";
 import { lightColors, darkColors, setStyle } from "../../../helpers/themes";
-import { addNote } from "../../../helpers/sql_notes";
 import { useSQLiteContext } from "expo-sqlite";
-import { RichText, Toolbar, useEditorBridge, useEditorContent } from "@10play/tentap-editor";
-
+import {
+  RichText,
+  Toolbar,
+  useEditorBridge,
+  useEditorContent,
+} from "@10play/tentap-editor";
 
 export default function NewNote() {
   const db = useSQLiteContext();
   const [titleFocused, setTitleFocused] = useState(false);
   const [bodyFocused, setBodyFocused] = useState(false);
   const [title, setTitle] = useState("");
+  const { currentTheme, setCurrentTheme } = useContext(SettingsContext);
+  let colors = currentTheme == "dark" ? dark : light;
+  const navigation = useNavigation();
   const editor = useEditorBridge({
     autofocus: true,
     avoidIosKeyboard: true,
@@ -29,7 +41,7 @@ export default function NewNote() {
   });
   const [noteInDb, setNoteInDb] = useState(false);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
-  const content = useEditorContent(editor, { type: "json" });
+  const content = useEditorContent(editor, { type: "string" });
 
   const initialContent = `<p>Initial</p>`;
   /*
@@ -43,26 +55,26 @@ export default function NewNote() {
       if (hasUnsavedChanges) {
         saveNote();
       }
-    }
-    
-    navigation.addListener("beforeRemove", noteAction)
-   
-    return () => navigation.removeListener("beforeRemove", noteAction)
-    ;
+    };
+
+    navigation.addListener("beforeRemove", noteAction);
+
+    return () => navigation.removeListener("beforeRemove", noteAction);
   }, []);
 
   function saveNote() {
     // is the note already in db?
-    if (noteInDb) {
-      updateNote()
-    } else {
-      addNote();
-    }
-  } 
+    // if (noteInDb) {
+    //   updateNote();
+    // } else {
+    //   addNewNote();
+    // }
+    addNewNote();
+  }
   function addNewNote() {
-    addNote(db, title, body);
+    console.log(content);
+    addNote(db, title, "aaa");
     setTitle("");
-    setBody("");
     router.push("/notes");
   }
 
@@ -81,12 +93,13 @@ export default function NewNote() {
           onChangeText={setTitle}
           style={
             titleFocused
-              ? [styles.title, styles.focused, colors.text] : [styles.title, colors.text]
+              ? [styles.title, styles.focused, colors.text]
+              : [styles.title, colors.text]
           }
         />
       </View>
       <View style={styles.fullScreen}>
-        <View style={styles.notePadd}>
+        <View style={[styles.richTextContainer, colors.textField]}>
           <RichText editor={editor} />
         </View>
 
@@ -97,7 +110,7 @@ export default function NewNote() {
           <Toolbar editor={editor} />
         </KeyboardAvoidingView>
       </View>
-      <Button title="Save" onPress={addNote} />
+      <Button title="Save" onPress={addNewNote} />
     </View>
   );
 }
@@ -109,7 +122,7 @@ const styles = StyleSheet.create({
   keyboardAvoidingView: {
     position: "absolute",
     width: "100%",
-    bottom: 0,
+    bottom: 8,
   },
   container: {
     paddingHorizontal: 14,
@@ -118,14 +131,16 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     flex: 1,
   },
-  notePadd: {
-    padding: 14,
+  richTextContainer: {
     flex: 1,
-    backgroundColor: "white",
+    marginBottom: 8,
+    paddingHorizontal: 8,
   },
   title: {
-    fontWeight: "bold"
-  }
+    fontWeight: "bold",
+    marginBottom: 8,
+    fontSize: 20,
+  },
 });
 
 const light = StyleSheet.create({
@@ -138,7 +153,7 @@ const light = StyleSheet.create({
   textField: {
     backgroundColor: lightColors.primary,
     boxShadow: "2 2 2 lightgrey",
-  }
+  },
 });
 
 const dark = StyleSheet.create({
@@ -151,5 +166,5 @@ const dark = StyleSheet.create({
   textField: {
     backgroundColor: darkColors.primary,
     boxShadow: "2 2 2 rgba(0, 0, 0, 0.8)",
-  }
+  },
 });

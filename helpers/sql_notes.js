@@ -69,6 +69,7 @@ export const dbAddNote = async (db, title, body) => {
       title,
       body
     );
+    console.log(add);
     return true;
   } catch (error) {
     console.log(error);
