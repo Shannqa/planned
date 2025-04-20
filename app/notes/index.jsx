@@ -29,16 +29,18 @@ export default function AllNotes() {
   const width = useWindowDimensions();
 
   // temporary fix for an error with renderHtml
-  const ignoreErrors = [
-    "Support for defaultProps will be removed",
-    /Support for defaultProps will be removed from function components in a future major release. Use JavaScript default parameters instead./,
-  ];
-  const error = console.error;
-  console.error = (...arg) => {
-    for (const error of ignoreErrors) if (arg[0].includes(error)) return;
-    error(...arg);
-  };
-  LogBox.ignoreLogs(ignoreErrors);
+  (function fixRenderer() {
+    const ignoreErrors = [
+      "Support for defaultProps will be removed",
+      /Support for defaultProps will be removed from function components in a future major release. Use JavaScript default parameters instead./,
+    ];
+    const error = console.error;
+    console.error = (...arg) => {
+      for (const error of ignoreErrors) if (arg[0].includes(error)) return;
+      error(...arg);
+    };
+    LogBox.ignoreLogs(ignoreErrors);
+  })();
 
   useEffect(() => {
     const open = notes.filter((note) => note.status == "open");
