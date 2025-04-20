@@ -1,10 +1,23 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Text, View, StyleSheet, Button } from "react-native";
+import {
+  TextInput,
+  View,
+  StyleSheet,
+  Button,
+  KeyboardAvoidingView,
+  Platform,
+} from "react-native";
 import { useLocalSearchParams, Stack, Link, router } from "expo-router";
 import { NotesContext } from "../../../helpers/notes_provider";
 import { SettingsContext } from "../../../helpers/settings_provider";
 import { lightColors, darkColors, setStyle } from "../../../helpers/themes";
 import RightMenuSingle from "../../../helpers/right_menu_single";
+import {
+  RichText,
+  Toolbar,
+  useEditorBridge,
+  useEditorContent,
+} from "@10play/tentap-editor";
 
 export default function ViewNote() {
   const params = useLocalSearchParams();
@@ -12,8 +25,18 @@ export default function ViewNote() {
   let colors = currentTheme == "dark" ? dark : light;
   const { notes, setNotes } = useContext(NotesContext);
   const [note, setNote] = useState({ id: "", title: "", body: "" });
+  const [title, setTitle] = useState("");
+  const [body, setBody] = useState("");
+  const editor = useEditorBridge({
+    autofocus: true,
+    avoidIosKeyboard: true,
+    editable: false,
+  });
+
+  const content = useEditorContent(editor, { type: "html" });
 
   useEffect(() => {
+    // set initial values of the existing note
     if (notes && params.id) {
       // console.log(notes);
       for (let i = 0; i < notes.length; i++) {
@@ -23,10 +46,18 @@ export default function ViewNote() {
             title: notes[i].title,
             body: notes[i].body,
           });
+          setTitle(notes[i].title);
+          setBody(notes[i].body);
+
+          // editor?.setContent(notes[i].body);
         }
       }
     }
-  }, [notes]);
+  }, []);
+
+  useEffect(() => {
+    editor.setContent(body);
+  }, [editor]);
 
   return (
     <View style={setStyle("container", styles, colors)}>
@@ -38,18 +69,49 @@ export default function ViewNote() {
           ),
         }}
       />
-      <View style={styles.note}>
+      <View style={[styles.title, colors.textField]}>
+        <TextInput
+          value={title}
+          onFocus={() => setTitleFocused(true)}
+          onBlur={() => setTitleFocused(false)}
+          style={[styles.title, colors.text]}
+        />
+      </View>
+      <View style={styles.fullScreen}>
+        <View style={[styles.richTextContainer, colors.textField]}>
+          <RichText editor={editor} />
+        </View>
+
+        <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+          style={styles.keyboardAvoidingView}
+        >
+          <Toolbar editor={editor} />
+        </KeyboardAvoidingView>
+      </View>
+      <Link href="./edit" asChild>
+        <Button title="Edit" />
+      </Link>
+      {/* <View style={styles.note}>
         <Text style={setStyle("title", styles, colors)}>{note.title}</Text>
         <Text style={setStyle("body", styles, colors)}>{note.body}</Text>
       </View>
       <Link href="./edit" asChild>
         <Button title="Edit" />
-      </Link>
+      </Link> */}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  fullScreen: {
+    flex: 1,
+  },
+  keyboardAvoidingView: {
+    position: "absolute",
+    width: "100%",
+    bottom: 8,
+  },
   container: {
     paddingHorizontal: 14,
     paddingVertical: 20,
@@ -57,28 +119,15 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     flex: 1,
   },
-  note: {
+  richTextContainer: {
     flex: 1,
+    marginBottom: 8,
+    paddingHorizontal: 8,
   },
   title: {
-    marginBottom: 8,
-    paddingVertical: 10,
-    paddingHorizontal: 6,
-    fontSize: 20,
     fontWeight: "bold",
-  },
-  body: {
-    paddingVertical: 10,
-    paddingHorizontal: 6,
-    fontSize: 18,
-    padding: 4,
     marginBottom: 8,
-    flexGrow: 1,
-  },
-  menuButton: {
-    backgroundColor: "green",
-    paddingHorizontal: 14,
-    paddingVertical: 20,
+    fontSize: 20,
   },
 });
 
@@ -86,18 +135,12 @@ const light = StyleSheet.create({
   container: {
     backgroundColor: lightColors.secondary,
   },
-  title: {
-    backgroundColor: lightColors.primary,
-    boxShadow: "2 2 2 lightgrey",
-    color: lightColors.font,
-  },
-  body: {
-    backgroundColor: lightColors.primary,
-    boxShadow: "2 2 2 lightgrey",
-    color: lightColors.font,
-  },
   text: {
     color: lightColors.font,
+  },
+  textField: {
+    backgroundColor: lightColors.primary,
+    boxShadow: "2 2 2 lightgrey",
   },
 });
 
@@ -105,17 +148,11 @@ const dark = StyleSheet.create({
   container: {
     backgroundColor: darkColors.secondary,
   },
-  title: {
-    backgroundColor: darkColors.primary,
-    boxShadow: "2 2 2 rgba(0, 0, 0, 0.8)",
-    color: darkColors.font,
-  },
-  body: {
-    backgroundColor: darkColors.primary,
-    boxShadow: "2 2 2 rgba(0, 0, 0, 0.8)",
-    color: darkColors.font,
-  },
   text: {
     color: darkColors.font,
+  },
+  textField: {
+    backgroundColor: darkColors.primary,
+    boxShadow: "2 2 2 rgba(0, 0, 0, 0.8)",
   },
 });

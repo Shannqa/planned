@@ -1,11 +1,24 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Text, View, StyleSheet, TextInput, Button } from "react-native";
+import {
+  View,
+  StyleSheet,
+  TextInput,
+  Button,
+  KeyboardAvoidingView,
+  Platform,
+} from "react-native";
 import { useLocalSearchParams, router, Stack } from "expo-router";
 import { NotesContext, getNotes } from "../../../helpers/notes_provider";
 import { SettingsContext } from "../../../helpers/settings_provider";
 import { lightColors, darkColors, setStyle } from "../../../helpers/themes";
 import { editNote } from "../../../helpers/sql_notes";
 import { useSQLiteContext } from "expo-sqlite";
+import {
+  RichText,
+  Toolbar,
+  useEditorBridge,
+  useEditorContent,
+} from "@10play/tentap-editor";
 
 export default function EditNote() {
   const params = useLocalSearchParams();
@@ -18,6 +31,12 @@ export default function EditNote() {
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const db = useSQLiteContext();
+  const editor = useEditorBridge({
+    autofocus: true,
+    avoidIosKeyboard: true,
+  });
+
+  const content = useEditorContent(editor, { type: "html" });
 
   useEffect(() => {
     // set initial values of the existing note
@@ -32,10 +51,15 @@ export default function EditNote() {
           });
           setTitle(notes[i].title);
           setBody(notes[i].body);
+          console.log(notes[i].body);
         }
       }
     }
   }, []);
+
+  useEffect(() => {
+    editor.setContent(body);
+  }, [editor]);
 
   async function updateNote() {
     // console.log(note.id, title, body);
@@ -51,7 +75,34 @@ export default function EditNote() {
           title: `Note id ${params.id}`,
         }}
       />
-      <View style={styles.note}>
+      <View style={[styles.title, colors.textField]}>
+        <TextInput
+          value={title}
+          onFocus={() => setTitleFocused(true)}
+          onBlur={() => setTitleFocused(false)}
+          onChangeText={setTitle}
+          style={
+            titleFocused
+              ? [styles.title, styles.focused, colors.text]
+              : [styles.title, colors.text]
+          }
+        />
+      </View>
+      <View style={styles.fullScreen}>
+        <View style={[styles.richTextContainer, colors.textField]}>
+          <RichText editor={editor} />
+        </View>
+
+        <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+          style={styles.keyboardAvoidingView}
+        >
+          <Toolbar editor={editor} />
+        </KeyboardAvoidingView>
+      </View>
+      <Button title="Save" onPress={updateNote} />
+
+      {/* <View style={styles.note}>
         <TextInput
           value={title}
           onFocus={() => setTitleFocused(true)}
@@ -75,12 +126,20 @@ export default function EditNote() {
           }
         />
       </View>
-      <Button title="Save" onPress={updateNote} />
+      <Button title="Save" onPress={updateNote} /> */}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  fullScreen: {
+    flex: 1,
+  },
+  keyboardAvoidingView: {
+    position: "absolute",
+    width: "100%",
+    bottom: 8,
+  },
   container: {
     paddingHorizontal: 14,
     paddingVertical: 20,
@@ -88,26 +147,15 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     flex: 1,
   },
-  note: {
+  richTextContainer: {
     flex: 1,
+    marginBottom: 8,
+    paddingHorizontal: 8,
   },
   title: {
-    paddingVertical: 10,
-    paddingHorizontal: 6,
+    fontWeight: "bold",
     marginBottom: 8,
     fontSize: 20,
-    fontWeight: "bold",
-  },
-  body: {
-    paddingVertical: 10,
-    paddingHorizontal: 6,
-    fontSize: 18,
-    marginBottom: 8,
-    flexGrow: 1,
-    textAlignVertical: "top",
-  },
-  focused: {
-    borderWidth: 2,
   },
 });
 
@@ -115,38 +163,24 @@ const light = StyleSheet.create({
   container: {
     backgroundColor: lightColors.secondary,
   },
-  title: {
-    backgroundColor: lightColors.primary,
-    boxShadow: "2 2 2 lightgrey",
-    color: lightColors.font,
-  },
-  body: {
-    backgroundColor: lightColors.primary,
-    boxShadow: "2 2 2 lightgrey",
-    color: lightColors.font,
-  },
   text: {
     color: lightColors.font,
   },
-  focused: {},
+  textField: {
+    backgroundColor: lightColors.primary,
+    boxShadow: "2 2 2 lightgrey",
+  },
 });
 
 const dark = StyleSheet.create({
   container: {
     backgroundColor: darkColors.secondary,
   },
-  title: {
-    backgroundColor: darkColors.primary,
-    boxShadow: "2 2 2 rgba(0, 0, 0, 0.8)",
-    color: darkColors.font,
-  },
-  body: {
-    backgroundColor: darkColors.primary,
-    boxShadow: "2 2 2 rgba(0, 0, 0, 0.8)",
-    color: darkColors.font,
-  },
   text: {
     color: darkColors.font,
   },
-  focused: {},
+  textField: {
+    backgroundColor: darkColors.primary,
+    boxShadow: "2 2 2 rgba(0, 0, 0, 0.8)",
+  },
 });

@@ -53,6 +53,7 @@
     "@types/react-test-renderer": "^18.3.0",
     "jest": "~29.7.0",
     "jest-expo": "^52.0.0",
+    "react-native-render-html": "^6.3.4",
     "react-test-renderer": "18.3.1"
   },
   "private": true

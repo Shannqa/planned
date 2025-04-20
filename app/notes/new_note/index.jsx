@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
 import {
-  Text,
   View,
   StyleSheet,
   Button,
@@ -42,7 +41,7 @@ export default function NewNote() {
   });
   const [noteInDb, setNoteInDb] = useState(false);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
-  const content = useEditorContent(editor, { type: "json" });
+  const content = useEditorContent(editor, { type: "html" });
 
   const initialContent = `<p>Initial</p>`;
   /*
