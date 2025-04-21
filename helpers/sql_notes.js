@@ -69,8 +69,7 @@ export const dbAddNote = async (db, title, body) => {
       title,
       body
     );
-    console.log(add);
-    return true;
+    return { lastInsertRowId: add.lastInsertRowId };
   } catch (error) {
     console.log(error);
     return false;

@@ -1,4 +1,5 @@
-import React, { useContext, useEffect, useState } from "react";
+// @ts-nocheck
+import React, { useContext, useEffect, useState, useRef } from "react";
 import {
   View,
   StyleSheet,
@@ -31,52 +32,103 @@ export default function NewNote() {
   const [titleFocused, setTitleFocused] = useState(false);
   const [bodyFocused, setBodyFocused] = useState(false);
   const [title, setTitle] = useState("");
-  const { currentTheme, setCurrentTheme } = useContext(SettingsContext);
+  const [noteId, setNoteId] = useState(null);
+  const { currentTheme } = useContext(SettingsContext);
   let colors = currentTheme == "dark" ? dark : light;
   const navigation = useNavigation();
   const editor = useEditorBridge({
     autofocus: true,
     avoidIosKeyboard: true,
-    initialContent,
+    // initialContent,
+    onChange: () => !hasUnsavedChanges && setHasUnsavedChanges(true),
   });
-  const [noteInDb, setNoteInDb] = useState(false);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
-  const content = useEditorContent(editor, { type: "html" });
-
   const initialContent = `<p>Initial</p>`;
-  /*
-  useEffect(() => {
-    // check if it's needed to render the content in the editor? or is it better to add interval/timeout to add to the database
-    content && addNote(db, title, content)
-  }, [content]);
-  */
-  useEffect(() => {
-    const noteAction = (e) => {
-      if (hasUnsavedChanges) {
-        saveNote();
-      }
-    };
+  const content = useEditorContent(editor, { type: "html" });
+  const contentRef = useRef(content);
+  const titleRef = useRef(title);
+  const idRef = useRef(noteId);
+  const unsavedRef = useRef(hasUnsavedChanges);
 
+  useEffect(() => {
+    // add refs to make sure values are up-to-date inside the effect with an event listener
+    contentRef.current = content;
+    titleRef.current = title;
+    idRef.current = noteId;
+    unsavedRef.current = hasUnsavedChanges;
+  }, [content, title, noteId, hasUnsavedChanges]);
+
+  useEffect(() => {
+    // use current refs insead of adding title and content in dependencies array so the listeners aren't readded with every keystroke
+    const noteAction = async (e) => {
+      if (unsavedRef.current) {
+        console.log(unsavedRef.current);
+        e.preventDefault();
+        await saveNote();
+      }
+      navigation.dispatch(e.data.action);
+    };
     navigation.addListener("beforeRemove", noteAction);
 
     return () => navigation.removeListener("beforeRemove", noteAction);
-  }, []);
+  }, [navigation]);
 
-  function saveNote() {
-    // is the note already in db?
-    // if (noteInDb) {
-    //   updateNote();
-    // } else {
-    //   addNewNote();
-    // }
-    addNewNote();
+  async function saveNote() {
+    // using refs so data doesn't get stale when called from
+    const currentTitle = titleRef.current;
+    const currentContent = contentRef.current;
+    const currentId = idRef.current;
+    console.log("title", currentTitle, "cont", currentContent);
+    //  (NOBRIDGE) LOG  title  cont <p></p>
+    if (!currentTitle && !currentContent) {
+      console.log("empty title and content");
+      return;
+    }
+    if (noteId) {
+      const result = await editNote(
+        db,
+        currentId,
+        currentTitle,
+        currentContent
+      );
+      setHasUnsavedChanges(false);
+      unsavedRef.current = false;
+    } else {
+      const id = await addNote(db, title, content);
+      setNoteId(id);
+      idRef.current = id;
+      setHasUnsavedChanges(false);
+      unsavedRef.current = false;
+    }
   }
-  function addNewNote() {
-    console.log(content);
-    addNote(db, title, content);
-    setTitle("");
-    router.push("/notes");
+
+  /**********
+   * async function saveNote() {
+  const currentNoteId = noteIdRef.current;
+  const currentTitle = titleRef.current;
+  const currentContent = contentRef.current;
+
+  if (currentNoteId) {
+    await editNote(db, currentNoteId, currentTitle, currentContent);
+    setHasUnsavedChanges(false);
+  } else {
+    const id = await addNote(db, currentTitle, currentContent);
+    setNoteId(id); // update state
+    noteIdRef.current = id; // update ref
+    setHasUnsavedChanges(false);
   }
+}
+   * 
+   * 
+   * 
+   */
+  // async function addNewNote() {
+  //   console.log(content);
+  //   const result = await addNote(db, title, content);
+  //   console.log("noteId ", result);
+  //   setTitle("");
+  //   router.push("/notes");
+  // }
 
   return (
     <View style={styles.container}>
@@ -110,7 +162,7 @@ export default function NewNote() {
           <Toolbar editor={editor} />
         </KeyboardAvoidingView>
       </View>
-      <Button title="Save" onPress={addNewNote} />
+      <Button title="Save" onPress={saveNote} />
     </View>
   );
 }

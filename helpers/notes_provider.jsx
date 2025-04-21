@@ -62,9 +62,9 @@ export default function NotesProvider({ children }) {
   // add note to db, then fetch notes
   async function addNote(db, title, body) {
     const result = await dbAddNote(db, title, body);
-    if (result) {
-      await getNoteMulti(db);
-    }
+    const noteId = result["lastInsertRowId"];
+    console.log("lastInsertRowId: ", noteId);
+    return noteId;
   }
 
   async function editNote(db, id, title, body) {
