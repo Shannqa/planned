@@ -1,12 +1,21 @@
 import React, { useState, useContext, useEffect, useLayoutEffect } from "react";
 import { Link, useRouter } from "expo-router";
-import { View, Text, FlatList, StyleSheet, Pressable } from "react-native";
+import {
+  View,
+  Text,
+  FlatList,
+  StyleSheet,
+  Pressable,
+  useWindowDimensions,
+  LogBox,
+} from "react-native";
 import { NotesContext } from "../../helpers/notes_provider";
 import { lightColors, darkColors, setStyle } from "../../helpers/themes";
 import { SettingsContext } from "../../helpers/settings_provider";
 import { useNavigation } from "@react-navigation/native";
 import RightMenuMulti from "../../helpers/right_menu_multi";
 import LeftMenuMulti from "../../helpers/left_menu_multi";
+import RenderHtml from "react-native-render-html";
 
 export default function AllNotes() {
   const { notes, setNotes, openNotes, setOpenNotes } = useContext(NotesContext);
@@ -17,6 +26,21 @@ export default function AllNotes() {
   const [selectedNotes, setSelectedNotes] = useState([]);
   const router = useRouter();
   const navigation = useNavigation();
+  const width = useWindowDimensions();
+
+  // temporary fix for an error with renderHtml
+  (function fixRenderer() {
+    const ignoreErrors = [
+      "Support for defaultProps will be removed",
+      /Support for defaultProps will be removed from function components in a future major release. Use JavaScript default parameters instead./,
+    ];
+    const error = console.error;
+    console.error = (...arg) => {
+      for (const error of ignoreErrors) if (arg[0].includes(error)) return;
+      error(...arg);
+    };
+    LogBox.ignoreLogs(ignoreErrors);
+  })();
 
   useEffect(() => {
     const open = notes.filter((note) => note.status == "open");
@@ -123,9 +147,13 @@ export default function AllNotes() {
                     <Text style={setStyle("title", styles, colors)}>
                       {item.title}
                     </Text>
-                    <Text style={setStyle("text", styles, colors)}>
+                    {/* <Text style={setStyle("text", styles, colors)}>
                       {item.body}
-                    </Text>
+                    </Text> */}
+                    <RenderHtml
+                      source={{ html: item.body }}
+                      contentWidth={200}
+                    />
                   </View>
                 </Pressable>
               </View>

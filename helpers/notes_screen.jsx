@@ -9,16 +9,29 @@ import {
   useWindowDimensions,
   LogBox,
 } from "react-native";
-import { NotesContext } from "../../helpers/notes_provider";
-import { lightColors, darkColors, setStyle } from "../../helpers/themes";
-import { SettingsContext } from "../../helpers/settings_provider";
+import { NotesContext } from "./notes_provider";
+import { lightColors, darkColors, setStyle } from "./themes";
+import { SettingsContext } from "./settings_provider";
 import { useNavigation } from "@react-navigation/native";
-import RightMenuMulti from "../../helpers/right_menu_multi";
-import LeftMenuMulti from "../../helpers/left_menu_multi";
+import RightMenuMulti from "./right_menu_multi";
+import LeftMenuMulti from "./left_menu_multi";
 import RenderHtml from "react-native-render-html";
 
-function NotesScreen({ screen }) {
-  const { notes, setNotes, openNotes, setOpenNotes, archiveNotes, setArchiveNotes, binNotes, setBinNotes } = useContext(NotesContext);
+export default function NotesScreen({
+  screen,
+  screenNotes,
+  screenNotesSetter,
+  screenTitle,
+  url,
+}) {
+  const {
+    notes,
+    setNotes,
+    archiveNotes,
+    setArchiveNotes,
+    binNotes,
+    setBinNotes,
+  } = useContext(NotesContext);
   const { currentTheme, setCurrentTheme } = useContext(SettingsContext);
   let colors = currentTheme == "dark" ? dark : light;
   // console.log(notes);
@@ -28,12 +41,12 @@ function NotesScreen({ screen }) {
   const navigation = useNavigation();
   const [notesData, setNotesData] = useState([]);
   const [screenUrl, setScreenUrl] = useState("");
-  
-    // temporary fix for an error with renderHtml
+
+  // temporary fix for an error with renderHtml
   (function fixRenderer() {
     const ignoreErrors = [
       "Support for defaultProps will be removed",
-      /Support for defaultProps will be removed from function components in a future major release. Use JavaScript default parameters instead./,
+      // /Support for defaultProps will be removed from function components in a future major release. Use JavaScript default parameters instead./,
     ];
     const error = console.error;
     console.error = (...arg) => {
@@ -42,35 +55,36 @@ function NotesScreen({ screen }) {
     };
     LogBox.ignoreLogs(ignoreErrors);
   })();
-  const [screenTitle, setScreenTitle] = useState("");
-  
-  if (screen == "openIndex") {
-    setScreenTitle("All notes");
-    setNotesData(openNotes);
-    setScreenUrl("notes");
-  } else if (screen == "archiveIndex") {
-    setScreenTitle("Archive");
-    setNotesData(archiveNotes);
-    setScreenUrl("archive");
-  } else if (screen == "binIndex") {
-    setScreenTitle("Bin");
-    setNotesData(binNotes);
-    setScreenUrl("bin")
-  }
-  
+
+  // useEffect(() => {
+  //   if (screen == "openIndex") {
+  //     // setScreenTitle("All notes");
+  //     // setNotesData(openNotes);
+  //     setScreenUrl("notes");
+  //   } else if (screen == "archiveIndex") {
+  //     // setScreenTitle("Archive");
+  //     // setNotesData(archiveNotes);
+  //     setScreenUrl("archive");
+  //   } else if (screen == "binIndex") {
+  //     // setScreenTitle("Bin");
+  //     // setNotesData(binNotes);
+  //     setScreenUrl("bin");
+  //   }
+  // }, [screen]);
+
   // set notes for different screens
-  useEffect(() => {
-    if (screen == "openIndex") {
-      const open = notes.filter((note) => note.status == "open");
-      setOpenNotes(open);
-    } else if (screen == "archiveIndex") {
-      const archive = notes.filter((note) => note.status == "archive");
-      setArchiveNotes(archive);
-    } else if (screen == "binIndex") {
-      const bin = notes.filter((note) => note.status == "bin");
-      setBinNotes(open);
-    }
-  }, [notes]);
+  // useEffect(() => {
+  //   if (screen == "openIndex") {
+  //     const open = notes.filter((note) => note.status == "open");
+  //     setOpenNotes(open);
+  //   } else if (screen == "archiveIndex") {
+  //     const archive = notes.filter((note) => note.status == "archive");
+  //     setArchiveNotes(archive);
+  //   } else if (screen == "binIndex") {
+  //     const bin = notes.filter((note) => note.status == "bin");
+  //     setBinNotes(open);
+  //   }
+  // }, [notes]);
 
   useLayoutEffect(() => {
     const parent = navigation.getParent();
@@ -140,12 +154,12 @@ function NotesScreen({ screen }) {
       // console.log("selection", newList);
     }
   }
-  
+
   return (
     <>
-      <View style={setStyle("container", styles, colors)}>
+      <View style={[styles.container, colors.container]}>
         <FlatList
-          data={notesData}
+          data={screenNotes}
           keyExtractor={(item) => item.id.toString()}
           numColumns={2}
           columnWrapperStyle={styles.row}
@@ -163,13 +177,13 @@ function NotesScreen({ screen }) {
                   onPress={
                     selecting
                       ? () => toggleSelection(item.id)
-                      : () => router.push(`${screenUrl}/${item.id}/view`)
+                      : () => router.push(`${url}/${item.id}/view`)
                   }
                   onLongPress={() => toggleSelection(item.id)}
                   style={styles.box}
                 >
                   <View>
-                    <Text style={setStyle("title", styles, colors)}>
+                    <Text style={[styles.title, colors.title]}>
                       {item.title}
                     </Text>
                     {/* <Text style={setStyle("text", styles, colors)}>
@@ -185,19 +199,21 @@ function NotesScreen({ screen }) {
             );
           }}
         />
-        {screen == "openIndex" && <View style={setStyle("buttonContainer", styles, colors)}>
-          <View style={setStyle("addButton", styles, colors)}>
-            <Link href="notes/new_note/" asChild>
-              <Pressable>
-                <View>
-                  <Text style={setStyle("addButtonText", styles, colors)}>
-                    +
-                  </Text>
-                </View>
-              </Pressable>
-            </Link>
+        {screen == "openIndex" && (
+          <View style={[styles.buttonContainer, colors.buttonContainer]}>
+            <View style={[styles.addButton, colors.addButton]}>
+              <Link href="notes/new_note/" asChild>
+                <Pressable>
+                  <View>
+                    <Text style={[styles.addButtonText, colors.addButtonText]}>
+                      +
+                    </Text>
+                  </View>
+                </Pressable>
+              </Link>
+            </View>
           </View>
-        </View>}
+        )}
       </View>
     </>
   );
@@ -309,3 +325,110 @@ const dark = StyleSheet.create({
     color: darkColors.font,
   },
 });
+
+// const styles = StyleSheet.create({
+//   container: {
+//     padding: 14,
+//     flex: 1,
+//     width: "100%",
+//     height: "100%",
+//   },
+//   singleNote: {
+//     margin: 4,
+//     padding: 8,
+//     fontSize: 17,
+//     flexBasis: 1,
+//     flexGrow: 1,
+//     flexDirection: "column",
+//     flex: 1,
+//     height: 150,
+//     justifyContent: "flex-start",
+//     alignItems: "flex-start",
+//   },
+//   title: {
+//     fontWeight: "bold",
+//     fontSize: 17,
+//   },
+//   text: {},
+//   box: {
+//     width: "100%",
+//     height: "100%",
+//   },
+//   selected: {},
+//   buttonContainer: {
+//     position: "relative",
+//     flex: 1,
+//     flexDirection: "row",
+//     justifyContent: "flex-end",
+//   },
+//   addButton: {
+//     width: 80,
+//     height: 80,
+//     position: "absolute",
+//     bottom: 32,
+//     right: 0,
+//     borderRadius: 50,
+//     flex: 1,
+//     justifyContent: "center",
+//     alignItems: "center",
+//   },
+//   addButtonText: {
+//     fontSize: 48,
+//   },
+// });
+
+// const light = StyleSheet.create({
+//   container: {
+//     backgroundColor: lightColors.secondary,
+//   },
+//   singleNote: {},
+//   title: {
+//     color: lightColors.font,
+//   },
+//   text: {
+//     color: lightColors.font,
+//   },
+//   buttonContainer: {},
+//   selected: {
+//     backgroundColor: lightColors.detail2,
+//     boxShadow: "2 2 2 lightgrey",
+//   },
+//   notSelected: {
+//     backgroundColor: lightColors.primary,
+//     boxShadow: "2 2 2 lightgrey",
+//   },
+//   addButton: {
+//     backgroundColor: lightColors.detail,
+//   },
+//   addButtonText: {
+//     color: lightColors.font,
+//   },
+// });
+
+// const dark = StyleSheet.create({
+//   container: {
+//     backgroundColor: darkColors.secondary,
+//   },
+//   singleNote: {},
+//   title: {
+//     color: darkColors.font,
+//   },
+//   text: {
+//     color: darkColors.font,
+//   },
+//   buttonContainer: {},
+//   selected: {
+//     backgroundColor: darkColors.detail2,
+//     boxShadow: "2 2 2 rgba(0, 0, 0, 0.8)",
+//   },
+//   notSelected: {
+//     backgroundColor: darkColors.primary,
+//     boxShadow: "2 2 2 rgba(0, 0, 0, 0.8)",
+//   },
+//   addButton: {
+//     backgroundColor: darkColors.detail,
+//   },
+//   addButtonText: {
+//     color: darkColors.font,
+//   },
+// });
