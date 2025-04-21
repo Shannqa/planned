@@ -6,41 +6,22 @@ import {
   FlatList,
   StyleSheet,
   Pressable,
-  useWindowDimensions,
   LogBox,
 } from "react-native";
-import { NotesContext } from "./notes_provider";
-import { lightColors, darkColors, setStyle } from "./themes";
+import { lightColors, darkColors } from "./themes";
 import { SettingsContext } from "./settings_provider";
 import { useNavigation } from "@react-navigation/native";
 import RightMenuMulti from "./right_menu_multi";
 import LeftMenuMulti from "./left_menu_multi";
 import RenderHtml from "react-native-render-html";
 
-export default function NotesScreen({
-  screen,
-  screenNotes,
-  screenNotesSetter,
-  screenTitle,
-  url,
-}) {
-  const {
-    notes,
-    setNotes,
-    archiveNotes,
-    setArchiveNotes,
-    binNotes,
-    setBinNotes,
-  } = useContext(NotesContext);
-  const { currentTheme, setCurrentTheme } = useContext(SettingsContext);
+export default function NotesScreen({ screen, screenNotes, screenTitle, url }) {
+  const { currentTheme } = useContext(SettingsContext);
   let colors = currentTheme == "dark" ? dark : light;
-  // console.log(notes);
   const [selecting, setSelecting] = useState(false);
   const [selectedNotes, setSelectedNotes] = useState([]);
   const router = useRouter();
   const navigation = useNavigation();
-  const [notesData, setNotesData] = useState([]);
-  const [screenUrl, setScreenUrl] = useState("");
 
   // temporary fix for an error with renderHtml
   (function fixRenderer() {
@@ -55,36 +36,6 @@ export default function NotesScreen({
     };
     LogBox.ignoreLogs(ignoreErrors);
   })();
-
-  // useEffect(() => {
-  //   if (screen == "openIndex") {
-  //     // setScreenTitle("All notes");
-  //     // setNotesData(openNotes);
-  //     setScreenUrl("notes");
-  //   } else if (screen == "archiveIndex") {
-  //     // setScreenTitle("Archive");
-  //     // setNotesData(archiveNotes);
-  //     setScreenUrl("archive");
-  //   } else if (screen == "binIndex") {
-  //     // setScreenTitle("Bin");
-  //     // setNotesData(binNotes);
-  //     setScreenUrl("bin");
-  //   }
-  // }, [screen]);
-
-  // set notes for different screens
-  // useEffect(() => {
-  //   if (screen == "openIndex") {
-  //     const open = notes.filter((note) => note.status == "open");
-  //     setOpenNotes(open);
-  //   } else if (screen == "archiveIndex") {
-  //     const archive = notes.filter((note) => note.status == "archive");
-  //     setArchiveNotes(archive);
-  //   } else if (screen == "binIndex") {
-  //     const bin = notes.filter((note) => note.status == "bin");
-  //     setBinNotes(open);
-  //   }
-  // }, [notes]);
 
   useLayoutEffect(() => {
     const parent = navigation.getParent();
@@ -122,7 +73,6 @@ export default function NotesScreen({
   }, [navigation, selecting, selectedNotes]);
 
   function startSelecting() {
-    // console.log(selecting);
     setSelecting(true);
     // show slide in menu
   }
@@ -135,7 +85,6 @@ export default function NotesScreen({
 
   function toggleSelection(id) {
     // add or remove note from selection
-
     if (selectedNotes.includes(id)) {
       // remove selection
       const newList = selectedNotes.filter((note_id) => note_id != id);
@@ -151,7 +100,6 @@ export default function NotesScreen({
       if (!selecting) {
         setSelecting(true);
       }
-      // console.log("selection", newList);
     }
   }
 
@@ -186,9 +134,6 @@ export default function NotesScreen({
                     <Text style={[styles.title, colors.title]}>
                       {item.title}
                     </Text>
-                    {/* <Text style={setStyle("text", styles, colors)}>
-                      {item.body}
-                    </Text> */}
                     <RenderHtml
                       source={{ html: item.body }}
                       contentWidth={200}
@@ -325,110 +270,3 @@ const dark = StyleSheet.create({
     color: darkColors.font,
   },
 });
-
-// const styles = StyleSheet.create({
-//   container: {
-//     padding: 14,
-//     flex: 1,
-//     width: "100%",
-//     height: "100%",
-//   },
-//   singleNote: {
-//     margin: 4,
-//     padding: 8,
-//     fontSize: 17,
-//     flexBasis: 1,
-//     flexGrow: 1,
-//     flexDirection: "column",
-//     flex: 1,
-//     height: 150,
-//     justifyContent: "flex-start",
-//     alignItems: "flex-start",
-//   },
-//   title: {
-//     fontWeight: "bold",
-//     fontSize: 17,
-//   },
-//   text: {},
-//   box: {
-//     width: "100%",
-//     height: "100%",
-//   },
-//   selected: {},
-//   buttonContainer: {
-//     position: "relative",
-//     flex: 1,
-//     flexDirection: "row",
-//     justifyContent: "flex-end",
-//   },
-//   addButton: {
-//     width: 80,
-//     height: 80,
-//     position: "absolute",
-//     bottom: 32,
-//     right: 0,
-//     borderRadius: 50,
-//     flex: 1,
-//     justifyContent: "center",
-//     alignItems: "center",
-//   },
-//   addButtonText: {
-//     fontSize: 48,
-//   },
-// });
-
-// const light = StyleSheet.create({
-//   container: {
-//     backgroundColor: lightColors.secondary,
-//   },
-//   singleNote: {},
-//   title: {
-//     color: lightColors.font,
-//   },
-//   text: {
-//     color: lightColors.font,
-//   },
-//   buttonContainer: {},
-//   selected: {
-//     backgroundColor: lightColors.detail2,
-//     boxShadow: "2 2 2 lightgrey",
-//   },
-//   notSelected: {
-//     backgroundColor: lightColors.primary,
-//     boxShadow: "2 2 2 lightgrey",
-//   },
-//   addButton: {
-//     backgroundColor: lightColors.detail,
-//   },
-//   addButtonText: {
-//     color: lightColors.font,
-//   },
-// });
-
-// const dark = StyleSheet.create({
-//   container: {
-//     backgroundColor: darkColors.secondary,
-//   },
-//   singleNote: {},
-//   title: {
-//     color: darkColors.font,
-//   },
-//   text: {
-//     color: darkColors.font,
-//   },
-//   buttonContainer: {},
-//   selected: {
-//     backgroundColor: darkColors.detail2,
-//     boxShadow: "2 2 2 rgba(0, 0, 0, 0.8)",
-//   },
-//   notSelected: {
-//     backgroundColor: darkColors.primary,
-//     boxShadow: "2 2 2 rgba(0, 0, 0, 0.8)",
-//   },
-//   addButton: {
-//     backgroundColor: darkColors.detail,
-//   },
-//   addButtonText: {
-//     color: darkColors.font,
-//   },
-// });
